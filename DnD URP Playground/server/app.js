@@ -1,0 +1,43 @@
+var app = require('express')();
+var http = require('http').createServer(app);
+var io = require('socket.io')(http);
+
+
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/index.html');
+});
+
+io.on('connection', function(socket){
+  console.log('a user connected');
+
+  socket.on('test-message', function(data){
+    console.log(data);
+  });
+
+  socket.on('dm-update-map', function(data){
+    io.emit('update-map', data);
+    //console.log(data);
+  });
+
+  socket.on('dm-update-mesh', function(data){
+    io.emit('update-mesh', data);
+    console.log(data);
+  });
+
+  socket.on('dm-update-mesh-all', function(data){
+    io.emit('update-mesh-all', data);
+    console.log(data);
+  });
+  socket.on('request-mesh-data', function(){
+    io.emit('request-mesh-data');
+    console.log("Mesh Data Requested");
+  });
+
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+});
+
+http.listen(3000, function(){
+  console.log('listening on *:3000');
+});
