@@ -221,12 +221,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 31880666}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 2117854933}
-  m_RootOrder: 0
+  m_Father: {fileID: 1752703065}
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &43929718
 GameObject:
@@ -676,11 +676,10 @@ MonoBehaviour:
   placementIndicator: {fileID: 248334415}
   placementDropdown: {fileID: 382359772}
   dmSelectionHandler: {fileID: 1300448230}
-  placementObjects:
-  - {fileID: 3487574340215604715, guid: f77213c233af8de469c1b4f3f0441f37, type: 3}
-  - {fileID: 6874934149035355597, guid: db0a09d1a050d3f4aba4a57dcda79c49, type: 3}
-  - {fileID: 2595384316894148050, guid: d388d178a9f311c488ddd8f1c96683b8, type: 3}
+  hiddenStorage: {fileID: 31880667}
+  placementObjects: []
   objectIdxToCreate: 0
+  placementRotation: 0
 --- !u!4 &233142250
 Transform:
   m_ObjectHideFlags: 0
@@ -3774,6 +3773,7 @@ Transform:
   - {fileID: 672883963}
   - {fileID: 93861519}
   - {fileID: 2117854933}
+  - {fileID: 31880667}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3904,7 +3904,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   autoUpdateMap: 1
   manualUpdateMap: 0
-  tiles: []
+  sendableObjects: []
 --- !u!114 &1772197447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4236,8 +4236,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 31880667}
+  m_Children: []
   m_Father: {fileID: 1752703065}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4254,7 +4253,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   newObjectMaterial: {fileID: 2100000, guid: d0d9bed6d550b03409d68c9ec183d6e3, type: 2}
-  hiddenStorage: {fileID: 31880667}
   importedCollection: []
   ObjectCreationHandler: {fileID: 233142248}
 --- !u!114 &2117854935

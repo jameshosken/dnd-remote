@@ -17,6 +17,9 @@ public class DMInterfaceHandler : MonoBehaviour
 
     [SerializeField] Dropdown selectionModeDropdown;
     [SerializeField] Dropdown objectPlacementDropdown;
+
+    DMActionHandler actionHandler;
+    DMCreationHandler creationHandler;
     
     int elevation = 0;
 
@@ -24,6 +27,8 @@ public class DMInterfaceHandler : MonoBehaviour
 
     private void Start()
     {
+        actionHandler = FindObjectOfType<DMActionHandler>();
+        creationHandler = FindObjectOfType<DMCreationHandler>();
 
         List<string> selectionNames = new List<string>();
         int c = 1;
@@ -40,6 +45,20 @@ public class DMInterfaceHandler : MonoBehaviour
         HandleElevationChangeKeypress(KeyCode.Equals, KeyCode.Minus);
         HandleObjectTypeChangeKeypress(KeyCode.T);
         HandleMouseModeChangeKeypress();
+        HandleObjectRotation(KeyCode.Q, KeyCode.E);
+    }
+
+    private void HandleObjectRotation(KeyCode ccw, KeyCode cw)
+    {
+        if (Input.GetKeyDown(ccw))
+        {
+            actionHandler.HandleSelectedObjectRotate(-1);
+            creationHandler.RotatePlacement(-1);
+        }else if (Input.GetKeyDown(cw))
+        {
+            actionHandler.HandleSelectedObjectRotate(1);
+            creationHandler.RotatePlacement(1);
+        }
     }
 
     private void HandleMouseModeChangeKeypress()

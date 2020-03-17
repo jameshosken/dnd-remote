@@ -10,9 +10,6 @@ public class ImportObjectFromFile : MonoBehaviour
 
     [SerializeField] Material newObjectMaterial;
 
-    //Hidden storage stores uploaded obj files as gameobjects, but hidden in the scene
-    [SerializeField] Transform hiddenStorage;
-
     OBJChunkImporter oi;
 
     public List<GameObject> importedCollection = new List<GameObject>();
@@ -51,12 +48,9 @@ public class ImportObjectFromFile : MonoBehaviour
 
         MeshFilter mF = newObj.AddComponent<MeshFilter>();
         MeshRenderer mR = newObj.AddComponent<MeshRenderer>();
-
         mF.mesh = newMesh;
-
         mR.material = newObjectMaterial;
 
-        newObj.transform.parent = hiddenStorage;
         importedCollection.Add(newObj);
 
         ObjectCreationHandler.SendMessage("OnNewPlaceableObject", newObj);

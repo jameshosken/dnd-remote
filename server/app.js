@@ -16,7 +16,7 @@ io.on('connection', function(socket){
 
   socket.on('dm-update-map', function(data){
     io.emit('update-map', data);
-    //console.log(data);
+    console.log(data);
   });
 
   socket.on('dm-update-mesh', function(data){

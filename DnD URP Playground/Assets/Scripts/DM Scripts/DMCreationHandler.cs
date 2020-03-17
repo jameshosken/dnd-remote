@@ -11,14 +11,16 @@ public class DMCreationHandler : MonoBehaviour
     [SerializeField] GameObject placementIndicator;
     [SerializeField] Dropdown placementDropdown;
     [SerializeField] DMSelectionHandler dmSelectionHandler;
+    [SerializeField] Transform hiddenStorage;
 
     [Space]
-    [Header("Match this to dropdown")]
     public List<GameObject> placementObjects = new List<GameObject>();
 
     public int objectIdxToCreate = 0;
 
     DMInterfaceHandler interfaceHandler;
+
+    public float placementRotation = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -29,12 +31,14 @@ public class DMCreationHandler : MonoBehaviour
             UpdatePlacementIndex();
         });
 
-        List<string> objNames = new List<string>();
-        foreach (GameObject obj in placementObjects)
+        GameObject[] prefabs = Resources.LoadAll<GameObject>("Prefabs/");
+
+        foreach (GameObject prefab in prefabs)
         {
-            objNames.Add(obj.name);
+            GameObject go = Instantiate(prefab);
+            go.name = prefab.name;
+            OnNewPlaceableObject(go);
         }
-        placementDropdown.AddOptions(objNames);
     }
 
     void UpdatePlacementIndex()
@@ -42,7 +46,12 @@ public class DMCreationHandler : MonoBehaviour
         objectIdxToCreate = placementDropdown.value;
     } 
 
-    // Update is called once per frame
+    public void RotatePlacement(int dir)
+    {
+        placementRotation += 90f * (float)dir;
+        placementIndicator.transform.rotation = Quaternion.Euler(Vector3.up * placementRotation);
+    }
+
     void Update()
     {
 
@@ -55,17 +64,18 @@ public class DMCreationHandler : MonoBehaviour
         if (!placementIndicator.activeSelf) { placementIndicator.SetActive(true); }
 
         placementIndicator.transform.position = interfaceHandler.GetMouseGridPosition();
+        
         HandleObjectPlacement();
     }
 
 
     void OnNewPlaceableObject(GameObject newObj)
     {
+        newObj.transform.parent = hiddenStorage;
 
         placementObjects.Add(newObj);
 
-        placementDropdown.ClearOptions();
-
+        placementDropdown.ClearOptions();   //Because we have to add options to dropdown in bulk
         List<string> objNames = new List<string>();
         foreach (GameObject obj in placementObjects)
         {
@@ -88,7 +98,11 @@ public class DMCreationHandler : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
 
-            GameObject clone = Instantiate(placementObjects[objectIdxToCreate], placementIndicator.transform.position, Quaternion.identity) as GameObject;
+            GameObject clone = Instantiate(
+                placementObjects[objectIdxToCreate], 
+                placementIndicator.transform.position, 
+                Quaternion.Euler(Vector3.up*placementRotation)
+                ) as GameObject;
             clone.name = placementObjects[objectIdxToCreate].name;
             clone.AddComponent<DMSelectable>();
         }

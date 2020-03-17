@@ -43,7 +43,7 @@ public class UpdateSelfMap : MonoBehaviour
             foreach (TileBlock currTile in currentMap.tiles)
             {
                 if (CompareTiles(currTile, newMap.tiles[i]))
-                {   
+                {
                     //Determine if location must be updated:
                     UpdateTileLocation(currTile, newMap.tiles[i]);
                     contains = true;
@@ -83,6 +83,8 @@ public class UpdateSelfMap : MonoBehaviour
         else
         {
             GameObject.Find(GetNameFromTileUID(currTile)).transform.position = newTile.location;
+
+            GameObject.Find(GetNameFromTileUID(currTile)).transform.rotation = Quaternion.Euler(newTile.rotation);
         }
     }
 

@@ -76,11 +76,12 @@ public class OBJChunkImporter: MonoBehaviour
         string[] chunks = filePath.Split(new char[] { '\\', '/' });
         mesh.name = chunks[chunks.Length - 1];
 
+        infoText.text = "Mesh loaded, calculating bounds";
         mesh.RecalculateBounds();
+        infoText.text = "Mesh loaded, optimising mesh";
         mesh.Optimize();
 
-
-
+        Debug.Log("Mesh Loaded");
 
         importer.OnReceiveMeshData(mesh);
     }

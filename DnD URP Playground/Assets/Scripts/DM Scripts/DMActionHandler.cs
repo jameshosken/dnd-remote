@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+
+//Handles all generic things an object can do (rotate, move, etc)
 public class DMActionHandler : MonoBehaviour
 {
     [SerializeField] GameObject movementIndicator;
@@ -83,11 +86,15 @@ public class DMActionHandler : MonoBehaviour
         lineRenderer.SetPosition(0, p1);
         lineRenderer.SetPosition(1, p2);
 
-
         float d = Vector3.Distance(p1, p2) * 5f;    //Size of each grid
         infoText.text = "Distance: " + d.ToString("F1");
 
         
+    }
+
+    public void HandleSelectedObjectRotate(int dir)
+    {
+        if(selectionHandler.selected != null) selectionHandler.selected.transform.Rotate(Vector3.up * 90 * dir);
     }
 
     private void HandleSelectedObjectDelete()
