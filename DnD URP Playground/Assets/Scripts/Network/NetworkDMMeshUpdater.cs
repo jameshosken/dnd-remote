@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using SocketIO;
 
-public class UpdateClientMeshes : MonoBehaviour
+public class NetworkDMMeshUpdater : MonoBehaviour
 {
 
 

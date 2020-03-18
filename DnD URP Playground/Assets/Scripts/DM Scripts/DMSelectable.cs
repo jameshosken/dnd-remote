@@ -4,22 +4,21 @@ using UnityEngine;
 
 public class DMSelectable : MonoBehaviour
 {
-    UpdateClientMaps dmMapUpdater;
-    UpdateSelfMap selfMapUpdater;
+    NetworkDMMapUpdater dmMapUpdater;
+    NetworkPlayerMapUpdater selfMapUpdater;
 
-    public TileBlock tile;
+    public SerializedTile tile;
 
-    //PlayerInfo pInfo;
     private void Start()
     {
-        //gameObject.AddComponent<TileBlock>();
-
+    
+        //Ensure obj has collider
         if (!gameObject.GetComponent<Collider>())
         {
             gameObject.AddComponent<BoxCollider>();
         }
 
-        tile = new TileBlock(gameObject.name, gameObject.GetHashCode());
+        tile = new SerializedTile(gameObject.name, gameObject.GetHashCode());
 
     }
 

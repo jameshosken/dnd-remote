@@ -4,7 +4,7 @@ using UnityEngine;
 using SocketIO;
 using System;
 
-public class UpdateSelfMeshes : MonoBehaviour
+public class NetworkPlayerMeshUpdater : MonoBehaviour
 {
     PlayerMapHandler mapHandler;
     SocketIOComponent socket;

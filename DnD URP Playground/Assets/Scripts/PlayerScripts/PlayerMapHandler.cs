@@ -38,15 +38,15 @@ public class PlayerMapHandler : MonoBehaviour
 
     }
 
-    public void DeleteGameObjectFromScene(TileBlock currTile, Map currentMap)
+    public void DeleteGameObjectFromScene(SerializedTile currTile, Map currentMap)
     {
         Debug.LogWarning("Deleting GO From Scene");
-        GameObject tileToDelete = GameObject.Find(UpdateSelfMap.GetNameFromTileUID(currTile));
+        GameObject tileToDelete = GameObject.Find(NetworkPlayerMapUpdater.GetNameFromTileUID(currTile));
         currentMap.RemoveTile(currTile);
         GameObject.Destroy(tileToDelete);
     }
 
-    public void CreateNewGameobjectFromTile(TileBlock newTile, Map currentMap)
+    public void CreateNewGameobjectFromTile(SerializedTile newTile, Map currentMap)
     {
         Debug.LogWarning("Creating New GO From Tile");
 
@@ -57,7 +57,7 @@ public class PlayerMapHandler : MonoBehaviour
             if (prefab.name == newTileName)
             {
                 GameObject clone = Instantiate(prefab, newTile.location, Quaternion.Euler(newTile.rotation));
-                clone.name = UpdateSelfMap.GetNameFromTileUID(newTile);
+                clone.name = NetworkPlayerMapUpdater.GetNameFromTileUID(newTile);
                 currentMap.AddTile(newTile);
                 return;
             }

@@ -5,7 +5,7 @@ using UnityEngine;
 using SocketIO;
 
 [Serializable]
-public class UpdateClientMaps : MonoBehaviour
+public class NetworkDMMapUpdater : MonoBehaviour
 {
 
     public bool autoUpdateMap = true;
@@ -74,18 +74,18 @@ public class UpdateClientMaps : MonoBehaviour
 [Serializable]
 public class Map
 {
-    public List<TileBlock> tiles = new List<TileBlock>();
+    public List<SerializedTile> tiles = new List<SerializedTile>();
     public Map()
     {
-        tiles = new List<TileBlock>();
+        tiles = new List<SerializedTile>();
     }
 
-    public void AddTile(TileBlock tile)
+    public void AddTile(SerializedTile tile)
     {
         tiles.Add(tile);
     }
 
-    public void RemoveTile(TileBlock tile)
+    public void RemoveTile(SerializedTile tile)
     {
         tiles.Remove(tile);
     }

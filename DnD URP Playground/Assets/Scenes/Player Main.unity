@@ -351,11 +351,13 @@ MonoBehaviour:
   placementIndicator: {fileID: 248334415}
   placementDropdown: {fileID: 382359772}
   dmSelectionHandler: {fileID: 1300448230}
+  hiddenStorage: {fileID: 0}
   placementObjects:
   - {fileID: 3487574340215604715, guid: f77213c233af8de469c1b4f3f0441f37, type: 3}
   - {fileID: 6874934149035355597, guid: db0a09d1a050d3f4aba4a57dcda79c49, type: 3}
   - {fileID: 2595384316894148050, guid: d388d178a9f311c488ddd8f1c96683b8, type: 3}
   objectIdxToCreate: 0
+  placementRotation: 0
 --- !u!4 &233142250
 Transform:
   m_ObjectHideFlags: 0
@@ -1246,7 +1248,6 @@ GameObject:
   - component: {fileID: 894443273}
   - component: {fileID: 894443272}
   - component: {fileID: 894443271}
-  - component: {fileID: 894443274}
   m_Layer: 5
   m_Name: Mouse Mode Dropdown
   m_TagString: Untagged
@@ -1383,18 +1384,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 894443269}
   m_CullTransparentMesh: 0
---- !u!114 &894443274
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 894443269}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9afe354dff7da924aad47490864498d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1041996907
 GameObject:
   m_ObjectHideFlags: 0

@@ -37,7 +37,7 @@ public class ImportObjectFromFile : MonoBehaviour
 
         CreateGameObjectFromMesh(newMesh);
         Debug.Log("Sending Mesh to Client:");
-        FindObjectOfType<UpdateClientMeshes>().SendMeshToClients(newMesh);
+        FindObjectOfType<NetworkDMMeshUpdater>().SendMeshToClients(newMesh);
         Debug.Log("Mesh sent to Client:");
         
     }

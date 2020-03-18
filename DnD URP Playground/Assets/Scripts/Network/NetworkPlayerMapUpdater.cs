@@ -4,9 +4,9 @@ using UnityEngine;
 using SocketIO;
 using System;
 
-public class UpdateSelfMap : MonoBehaviour
+public class NetworkPlayerMapUpdater : MonoBehaviour
 {
-    public List<TileBlock> tiles;
+    public List<SerializedTile> tiles;
 
     PlayerMapHandler mapHandler;
 
@@ -40,7 +40,7 @@ public class UpdateSelfMap : MonoBehaviour
         {
             bool contains = false;
 
-            foreach (TileBlock currTile in currentMap.tiles)
+            foreach (SerializedTile currTile in currentMap.tiles)
             {
                 if (CompareTiles(currTile, newMap.tiles[i]))
                 {
@@ -57,9 +57,9 @@ public class UpdateSelfMap : MonoBehaviour
 
         //Determine if old GameObject must be removed:
         for (int i = currentMap.tiles.Count - 1; i >= 0; i--) { 
-            TileBlock currTile = currentMap.tiles[i];
+            SerializedTile currTile = currentMap.tiles[i];
             bool contains = false;
-            foreach(TileBlock newTile in newMap.tiles)
+            foreach(SerializedTile newTile in newMap.tiles)
             {
                 if(CompareTiles(currTile, newTile)){
                     contains = true;
@@ -74,7 +74,7 @@ public class UpdateSelfMap : MonoBehaviour
         
     }
 
-    private void UpdateTileLocation(TileBlock currTile, TileBlock newTile)
+    private void UpdateTileLocation(SerializedTile currTile, SerializedTile newTile)
     {
         if(CompareTilePSR(currTile, newTile))
         {
@@ -89,17 +89,17 @@ public class UpdateSelfMap : MonoBehaviour
     }
 
 
-    public static string GetNameFromTileUID(TileBlock tile)
+    public static string GetNameFromTileUID(SerializedTile tile)
     {
         return tile.uid.ToString();
     }
 
-    bool CompareTiles(TileBlock t1, TileBlock t2)
+    bool CompareTiles(SerializedTile t1, SerializedTile t2)
     {
         return t1.uid == t2.uid;
     }
 
-    bool CompareTilePSR(TileBlock t1, TileBlock t2)
+    bool CompareTilePSR(SerializedTile t1, SerializedTile t2)
     {
 
         bool loc = (Vector3.Distance(t1.location, t2.location) < 0.1f);
