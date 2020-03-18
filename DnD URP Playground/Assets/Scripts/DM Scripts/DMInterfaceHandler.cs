@@ -14,8 +14,7 @@ public class DMInterfaceHandler : MonoBehaviour
         SELECT,
         PLACE,
         MOVE,
-        DELETE,
-        MEASURE
+        DELETE
     }
 
     [SerializeField] Dropdown selectionModeDropdown;
@@ -23,7 +22,8 @@ public class DMInterfaceHandler : MonoBehaviour
 
     DMActionHandler actionHandler;
     DMCreationHandler creationHandler;
-    
+    DMSelectionHandler selectionHandler;
+
     int elevation = 0;
 
     public Mode mode = Mode.SELECT;
@@ -32,10 +32,11 @@ public class DMInterfaceHandler : MonoBehaviour
     {
         actionHandler = FindObjectOfType<DMActionHandler>();
         creationHandler = FindObjectOfType<DMCreationHandler>();
+        selectionHandler = FindObjectOfType<DMSelectionHandler>();
 
         List<string> selectionNames = new List<string>();
         int c = 1;
-        foreach  (var m in Enum.GetNames(typeof(Mode)))
+        foreach (var m in Enum.GetNames(typeof(Mode)))
         {
             selectionNames.Add("(" + c.ToString() + ") " + m);
             c++;
@@ -49,6 +50,39 @@ public class DMInterfaceHandler : MonoBehaviour
         HandleObjectTypeChangeKeypress(KeyCode.T);
         HandleMouseModeChangeKeypress();
         HandleObjectRotation(KeyCode.Q, KeyCode.E);
+
+        HandlePrimaryMouseClick();
+        HandleSecondaryMouseClick();
+
+    }
+
+    private void HandleSecondaryMouseClick()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            if(mode == DMInterfaceHandler.Mode.MOVE)actionHandler.HandleSelectedObjectMove();
+        }
+    }
+
+    private void HandlePrimaryMouseClick()
+    {
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (mode == DMInterfaceHandler.Mode.PLACE)
+            {
+                creationHandler.HandleObjectPlacement();
+            }
+            else if (mode == DMInterfaceHandler.Mode.SELECT ||
+                        mode == DMInterfaceHandler.Mode.MOVE ||
+                        mode == DMInterfaceHandler.Mode.DELETE )
+            {
+                selectionHandler.HandleSelection();
+            }
+
+            actionHandler.UpdateMeasureToolStart();
+        }
+        
     }
 
     private void HandleObjectRotation(KeyCode ccw, KeyCode cw)
@@ -57,7 +91,8 @@ public class DMInterfaceHandler : MonoBehaviour
         {
             actionHandler.HandleSelectedObjectRotate(-1);
             creationHandler.RotatePlacement(-1);
-        }else if (Input.GetKeyDown(cw))
+        }
+        else if (Input.GetKeyDown(cw))
         {
             actionHandler.HandleSelectedObjectRotate(1);
             creationHandler.RotatePlacement(1);
@@ -66,7 +101,7 @@ public class DMInterfaceHandler : MonoBehaviour
 
     private void HandleMouseModeChangeKeypress()
     {
-        
+
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             selectionModeDropdown.value = 0;
@@ -104,7 +139,8 @@ public class DMInterfaceHandler : MonoBehaviour
         }
     }
 
-    public void ChangeMode(int m) {
+    public void ChangeMode(int m)
+    {
         //Changes mouse interaction mode
         mode = (Mode)m;
         Debug.Log("Mode Changed: " + mode);
@@ -161,7 +197,7 @@ public class DMInterfaceHandler : MonoBehaviour
         }
         if (Input.GetKeyDown(down))
         {
-            if(elevation > 0)
+            if (elevation > 0)
             {
                 elevation--;
             }

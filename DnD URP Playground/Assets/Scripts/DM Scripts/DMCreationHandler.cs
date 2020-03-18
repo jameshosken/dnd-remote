@@ -54,8 +54,9 @@ public class DMCreationHandler : MonoBehaviour
 
     void Update()
     {
+        //There's a better way to do this, involving a list of objects tat is active depepding on mode?
 
-        //Don't update if placing
+        //Don't update if not placing
         if (interfaceHandler.mode != DMInterfaceHandler.Mode.PLACE)
         {
             if (placementIndicator.activeSelf) { placementIndicator.SetActive(false); }
@@ -65,7 +66,7 @@ public class DMCreationHandler : MonoBehaviour
 
         placementIndicator.transform.position = interfaceHandler.GetMouseGridPosition();
         
-        HandleObjectPlacement();
+        //HandleObjectPlacement();
     }
 
 
@@ -86,26 +87,27 @@ public class DMCreationHandler : MonoBehaviour
 
     }
 
-    private void HandleObjectPlacement()
+    public void HandleObjectPlacement()
     {
 
+        
+
+        //if (Input.GetMouseButtonDown(0))
+        //{
         //Prevent clicks when over UI:
         if (EventSystem.current.IsPointerOverGameObject())
         {
             return;
         }
 
-        if (Input.GetMouseButtonDown(0))
-        {
-
-            GameObject clone = Instantiate(
-                placementObjects[objectIdxToCreate], 
-                placementIndicator.transform.position, 
-                Quaternion.Euler(Vector3.up*placementRotation)
-                ) as GameObject;
-            clone.name = placementObjects[objectIdxToCreate].name;
-            clone.AddComponent<DMSelectable>();
-        }
+        GameObject clone = Instantiate(
+            placementObjects[objectIdxToCreate], 
+            placementIndicator.transform.position, 
+            Quaternion.Euler(Vector3.up*placementRotation)
+            ) as GameObject;
+        clone.name = placementObjects[objectIdxToCreate].name;
+        clone.AddComponent<DMSelectable>();
+        //}
 
 
     }

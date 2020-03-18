@@ -14,44 +14,21 @@ public class DMSelectionHandler : MonoBehaviour
 
     Material selectionMaterial;
 
-    DMInterfaceHandler interfaceMode;
 
     // Start is called before the first frame update
     void Start()
     {
         main = Camera.main;
         selectionMaterial = Resources.Load("SelectionMaterial") as Material;
-        interfaceMode = FindObjectOfType<DMInterfaceHandler>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (interfaceMode.mode == DMInterfaceHandler.Mode.PLACE)
-        {
-            return;
-        }
-
-        if (interfaceMode.mode == DMInterfaceHandler.Mode.SELECT ||
-            interfaceMode.mode == DMInterfaceHandler.Mode.MOVE ||
-            interfaceMode.mode == DMInterfaceHandler.Mode.DELETE ||
-            interfaceMode.mode == DMInterfaceHandler.Mode.MEASURE)
-        {
-            if (Input.GetMouseButtonDown(0))
-
-            {
-                HandlePrimaryMouseClick();
-            }
-
-        }
-    }
 
     private void HandleSecondaryMouseClick()
     {
         throw new NotImplementedException();
     }
 
-    private void HandlePrimaryMouseClick()
+    public void HandleSelection()
     {
         Ray ray = main.ScreenPointToRay(Input.mousePosition);
 
