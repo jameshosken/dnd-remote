@@ -26,12 +26,13 @@ This is a very much living document and any input is welcome!
 
 ### Immediate Goals
 1. Fog of War/hidden objects
-2. DM Multi-select, multi-move, and mult-object interaction
-3. Generic Set Decor 
-4. Enhanced map creation tools
+2. DM Multi-select, multi-move, and mult-object interaction (Requires overhaul of DM_* scripts)
+3. Generic Set Decor (Requires adding new prefabs into Resources/Prefabs folder)
+4. Enhanced map creation tools (e.g. adding blocks in bulk - lines, rectangles. May require overhaul of DMSelection and DMCreation handlers)
+5. Local server integration for OSX (See StartNodeServer.cs)
 
 ### Future Goals
-1. Stats integration (HP, AC)
+1. Stats integration (HP, AC, ??)
 2. VFX for spellcasting/attacks/deaths
 
 ### Reach Goals

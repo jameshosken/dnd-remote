@@ -8,6 +8,7 @@ public class FileDragAndDrop : MonoBehaviour
 {
 
     ImportObjectFromFile importer;
+    NetworkHandler network;
 
     List<string> log = new List<string>();
     void OnEnable ()
@@ -19,7 +20,9 @@ public class FileDragAndDrop : MonoBehaviour
 
     private void Start()
     {
+        //Todo: this is clunky, fix with more appropriate references
         importer = FindObjectOfType<ImportObjectFromFile>();
+        network = FindObjectOfType<NetworkHandler>();
     }
     void OnDisable()
     {
@@ -44,6 +47,10 @@ public class FileDragAndDrop : MonoBehaviour
             if (ext == "obj")
             {
                 importer.TryImportFile(filePath);
+            }
+            else if(ext == "js")
+            {
+                network.TryStartServer(filePath);
             }
             else
             {

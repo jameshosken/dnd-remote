@@ -1,6 +1,11 @@
+
+  console.log('Starting Server');
 var app = require('express')();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
+
+console.log('Requirements loaded');
+
 
 
 app.get('/', function(req, res){
@@ -8,6 +13,7 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket){
+
   console.log('a user connected');
 
   socket.on('test-message', function(data){
@@ -38,6 +44,15 @@ io.on('connection', function(socket){
   });
 });
 
+//Check if port busy
+http.once('error', function(err) {
+  if (err.code === 'EADDRINUSE') {
+    console.log('port in use');
+    http.close();
+  }
+});
+
 http.listen(3000, function(){
   console.log('listening on *:3000');
+  
 });

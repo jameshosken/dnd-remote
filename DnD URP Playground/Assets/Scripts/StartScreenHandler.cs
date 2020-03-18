@@ -13,9 +13,10 @@ public class StartScreenHandler : MonoBehaviour
     [Header("UI Attributes")]
     [SerializeField] Dropdown playerType;
     [SerializeField] InputField playerName;
-    
+    [Space]
+    [Header("Network Attributes")]
+    [SerializeField] NetworkHandler network;
 
-    
     public void StartScene()
     {
 
@@ -30,16 +31,9 @@ public class StartScreenHandler : MonoBehaviour
             SceneManager.LoadScene(playerScene);
         }else if(type == 1)
         {
+            
             SceneManager.LoadScene(DMScene);
         }
-
-
     }
 
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
