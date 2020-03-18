@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Handles interaction with mouse and keyboard.
+/// </summary>
 public class DMInterfaceHandler : MonoBehaviour
 {
     public enum Mode

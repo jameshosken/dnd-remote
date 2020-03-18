@@ -38,7 +38,6 @@ This is a very much living document and any input is welcome!
 ### Reach Goals
 1. AR/mobile Player interface
 
-
 ## Get Involved
 For ideas/feature requests please submit an issue on GitHub. Feel free to fork the repo and start playing around with the code. If you have changes you'd like to make, go ahead and submit a pull request! To help keep track of stuff, please make sure there's an issue for each pull request you make. Think of the 'issue' as the problem/concept/feature your pull request addresses.
 
