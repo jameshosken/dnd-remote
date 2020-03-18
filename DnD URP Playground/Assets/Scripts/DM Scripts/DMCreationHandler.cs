@@ -10,13 +10,16 @@ public class DMCreationHandler : MonoBehaviour
 {
     [SerializeField] GameObject placementIndicator;
     [SerializeField] Dropdown placementDropdown;
+    [SerializeField] Dropdown materialDropdown;
     [SerializeField] DMSelectionHandler dmSelectionHandler;
     [SerializeField] Transform hiddenStorage;
 
     [Space]
     public List<GameObject> placementObjects = new List<GameObject>();
+    public List<Material> materialList = new List<Material>();
 
     public int objectIdxToCreate = 0;
+    public int materialIdxToAdd = 0;
 
     DMInterfaceHandler interfaceHandler;
 
@@ -31,6 +34,10 @@ public class DMCreationHandler : MonoBehaviour
             UpdatePlacementIndex();
         });
 
+        materialDropdown.onValueChanged.AddListener(delegate {
+            UpdateMaterialIndex();
+        });
+
         GameObject[] prefabs = Resources.LoadAll<GameObject>("Prefabs/");
 
         foreach (GameObject prefab in prefabs)
@@ -39,11 +46,18 @@ public class DMCreationHandler : MonoBehaviour
             go.name = prefab.name;
             OnNewPlaceableObject(go);
         }
+
+        SetUpMaterials();
     }
 
     void UpdatePlacementIndex()
     {
         objectIdxToCreate = placementDropdown.value;
+    }
+    
+    void UpdateMaterialIndex()
+    {
+        materialIdxToAdd = materialDropdown.value;
     } 
 
     public void RotatePlacement(int dir)
@@ -86,6 +100,20 @@ public class DMCreationHandler : MonoBehaviour
 
     }
 
+    void SetUpMaterials()
+    {
+        materialDropdown.ClearOptions();   //Because we have to add options to dropdown in bulk
+        List<string> matNames = new List<string>();
+        foreach (Material mat in materialList)
+        {
+            matNames.Add(mat.name);
+        }
+        materialDropdown.AddOptions(matNames);
+
+
+    }
+
+
     private void HandleObjectPlacement()
     {
 
@@ -104,6 +132,7 @@ public class DMCreationHandler : MonoBehaviour
                 Quaternion.Euler(Vector3.up*placementRotation)
                 ) as GameObject;
             clone.name = placementObjects[objectIdxToCreate].name;
+            clone.GetComponentInChildren<MeshRenderer>().material = materialList[materialIdxToAdd];
             clone.AddComponent<DMSelectable>();
         }
 

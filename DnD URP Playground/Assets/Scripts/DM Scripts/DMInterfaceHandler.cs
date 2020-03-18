@@ -17,6 +17,8 @@ public class DMInterfaceHandler : MonoBehaviour
 
     [SerializeField] Dropdown selectionModeDropdown;
     [SerializeField] Dropdown objectPlacementDropdown;
+    [SerializeField] Dropdown materialDropdown;
+
 
     DMActionHandler actionHandler;
     DMCreationHandler creationHandler;
@@ -46,6 +48,8 @@ public class DMInterfaceHandler : MonoBehaviour
         HandleObjectTypeChangeKeypress(KeyCode.T);
         HandleMouseModeChangeKeypress();
         HandleObjectRotation(KeyCode.Q, KeyCode.E);
+        HandleMaterialChangeKeypress(KeyCode.M);
+
     }
 
     private void HandleObjectRotation(KeyCode ccw, KeyCode cw)
@@ -97,6 +101,16 @@ public class DMInterfaceHandler : MonoBehaviour
         {
             int n = (objectPlacementDropdown.value + 1) % objectPlacementDropdown.options.Count;
             objectPlacementDropdown.value = n;
+
+        }
+    }
+
+    private void HandleMaterialChangeKeypress(KeyCode key)
+    {
+        if (Input.GetKeyDown(key))
+        {
+            int n = (materialDropdown.value + 1) % materialDropdown.options.Count;
+            materialDropdown.value = n;
 
         }
     }
