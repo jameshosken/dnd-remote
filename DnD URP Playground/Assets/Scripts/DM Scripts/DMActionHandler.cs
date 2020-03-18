@@ -21,8 +21,8 @@ public class DMActionHandler : MonoBehaviour
     Vector3 p1 = Vector3.zero;
     LineRenderer lineRenderer;
 
-    //For Indicating:
-
+    //For wall placing:
+    int wallClickCounter = 0;
 
     void Start()
     {

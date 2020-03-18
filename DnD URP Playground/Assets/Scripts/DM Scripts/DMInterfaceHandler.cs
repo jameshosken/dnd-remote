@@ -27,7 +27,7 @@ public class DMInterfaceHandler : MonoBehaviour
     int elevation = 0;
 
     public Mode mode = Mode.SELECT;
-
+    public Vector3 lastClickedLocation = Vector3.zero;
     private void Start()
     {
         actionHandler = FindObjectOfType<DMActionHandler>();
@@ -69,6 +69,8 @@ public class DMInterfaceHandler : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
+            
+            //Horrific 'if' nest:
             if (mode == DMInterfaceHandler.Mode.PLACE)
             {
                 creationHandler.HandleObjectPlacement();
@@ -81,8 +83,13 @@ public class DMInterfaceHandler : MonoBehaviour
             }
 
             actionHandler.UpdateMeasureToolStart();
+
+            //Applies to all modes, AFTER all above functions:
+            lastClickedLocation = GetMouseGridPosition();
+
+
         }
-        
+
     }
 
     private void HandleObjectRotation(KeyCode ccw, KeyCode cw)

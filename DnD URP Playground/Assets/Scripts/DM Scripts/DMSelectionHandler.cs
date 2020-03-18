@@ -51,7 +51,6 @@ public class DMSelectionHandler : MonoBehaviour
                 //See if there's a better way to get parent of clicked object
                 GameObject DMSelection = clicked.GetComponentInParent<DMSelectable>().gameObject;
 
-
                 isSuccessfulSelection = TryNewSelection(DMSelection);
 
             }

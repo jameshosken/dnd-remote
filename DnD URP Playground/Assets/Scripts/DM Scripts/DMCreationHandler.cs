@@ -22,12 +22,15 @@ public class DMCreationHandler : MonoBehaviour
 
     public float placementRotation = 0;
 
-    // Start is called before the first frame update
+    int wallClickCounter = 0;
+    Vector3 wallStart = Vector3.zero;
+
     void Start()
     {
         interfaceHandler = FindObjectOfType<DMInterfaceHandler>();
 
-        placementDropdown.onValueChanged.AddListener(delegate {
+        placementDropdown.onValueChanged.AddListener(delegate
+        {
             UpdatePlacementIndex();
         });
 
@@ -44,7 +47,7 @@ public class DMCreationHandler : MonoBehaviour
     void UpdatePlacementIndex()
     {
         objectIdxToCreate = placementDropdown.value;
-    } 
+    }
 
     public void RotatePlacement(int dir)
     {
@@ -65,7 +68,7 @@ public class DMCreationHandler : MonoBehaviour
         if (!placementIndicator.activeSelf) { placementIndicator.SetActive(true); }
 
         placementIndicator.transform.position = interfaceHandler.GetMouseGridPosition();
-        
+
         //HandleObjectPlacement();
     }
 
@@ -90,25 +93,91 @@ public class DMCreationHandler : MonoBehaviour
     public void HandleObjectPlacement()
     {
 
-        
 
-        //if (Input.GetMouseButtonDown(0))
-        //{
-        //Prevent clicks when over UI:
         if (EventSystem.current.IsPointerOverGameObject())
         {
             return;
         }
 
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            CalculateLineFromLastClick();
+        }
+        else
+        {
+            CreateNewObject(placementIndicator.transform.position);
+        }
+
+
+    }
+
+    private void CalculateLineFromLastClick()
+    {
+
+
+        Vector3 from = wallStart;
+        Vector3 to = placementIndicator.transform.position;
+        //Vector3 to = interfaceHandler.GetMouseGridPosition(); //Todo: Fix bug?
+
+        int cMax = 50;
+        int xSign = (int)Mathf.Sign(to.x - from.x);
+        int ySign = (int)Mathf.Sign(to.y - from.y);
+        int zSign = (int)Mathf.Sign(to.z - from.z);
+
+        for (int i = (int)from.x; i != (int)to.x; i += xSign)
+        {
+            if (i > cMax) break;
+            if (i == (int)from.x) continue; //Todo fix this dumb hack
+            CreateNewObject(new Vector3(i, from.y, from.z));
+        }
+        CreateNewObject(new Vector3(to.x, from.y, from.z));
+
+        for (int i = (int)from.z; i != (int)to.z; i += zSign)
+        {
+            if (i > cMax) break;
+            if (i == (int)from.z) continue;
+            CreateNewObject(new Vector3(to.x, from.y, i));
+        }
+
+        CreateNewObject(new Vector3(to.x, from.y, to.z));
+        for (int i = (int)from.y; i != (int)to.y; i += ySign)
+        {
+            if (i > cMax) break;
+            if (i == (int)from.y) continue;
+            CreateNewObject(new Vector3(to.x, i, to.z));
+        }
+
+        CreateNewObject(new Vector3(to.x, to.y, to.z));
+
+        wallStart = to;
+
+
+    }
+
+    void CreateNewObject(Vector3 pos)
+    {
+        //Todo: Not efficient, make better
+
+        wallStart = pos;
+
+        DMSelectable[] selectables = FindObjectsOfType<DMSelectable>();
+
+        foreach (DMSelectable sel in selectables)
+        {
+            if(sel.gameObject.transform.position == pos && sel.gameObject.name == placementObjects[objectIdxToCreate].name)
+            {
+                print("Duplicate Creation");
+                return;
+            }
+        }
+        
         GameObject clone = Instantiate(
-            placementObjects[objectIdxToCreate], 
-            placementIndicator.transform.position, 
-            Quaternion.Euler(Vector3.up*placementRotation)
+            placementObjects[objectIdxToCreate],
+            pos,
+            Quaternion.Euler(Vector3.up * placementRotation)
             ) as GameObject;
         clone.name = placementObjects[objectIdxToCreate].name;
         clone.AddComponent<DMSelectable>();
-        //}
-
 
     }
 
