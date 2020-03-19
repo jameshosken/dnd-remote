@@ -16,7 +16,9 @@ public class DisplayCurrentPlacementObject : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         creationHandler = GetComponentInParent<DMCreationHandler>();
+        objectPlacementDropdown = creationHandler.placementDropdown;
         objectPlacementDropdown.onValueChanged.AddListener(delegate
         {
             OnDropdownUpdate();

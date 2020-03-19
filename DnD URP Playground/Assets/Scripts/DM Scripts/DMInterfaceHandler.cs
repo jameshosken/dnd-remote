@@ -61,7 +61,20 @@ public class DMInterfaceHandler : MonoBehaviour
 
         HandlePrimaryMouseClick();
         HandleSecondaryMouseClick();
+        HandleWallPlacementMode(KeyCode.LeftShift);
 
+    }
+
+    private void HandleWallPlacementMode(KeyCode key)
+    {
+        if (Input.GetKeyDown(key))
+        {
+            creationHandler.ToggleWallMode(true);
+        }
+        if (Input.GetKeyUp(key))
+        {
+            creationHandler.ToggleWallMode(false);
+        }
     }
 
     //Fired by dropdown
