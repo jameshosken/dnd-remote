@@ -22,7 +22,6 @@ public class DMActionHandler : MonoBehaviour
     LineRenderer lineRenderer;
 
     //For wall placing:
-    int wallClickCounter = 0;
 
     void Start()
     {
