@@ -17,7 +17,7 @@
 /[Mm]emoryCaptures/
 
 # man I hope this works...
-**/Ignored/
+*Ignored/
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
