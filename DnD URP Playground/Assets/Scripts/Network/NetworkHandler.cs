@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using SocketIO;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(StartNodeServer))]
 [RequireComponent(typeof(SocketIOComponent))]
@@ -16,7 +17,6 @@ public class NetworkHandler : MonoBehaviour
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
-        DontDestroyOnLoad(status.gameObject);
 
         socket = GetComponent<SocketIOComponent>();
         startServer = GetComponent<StartNodeServer>();
@@ -24,17 +24,14 @@ public class NetworkHandler : MonoBehaviour
         //Check if connection exists:
         if (socket.IsConnected)
         {
+            Debug.LogWarning("Already connected to socket");
             UpdateStatusMessage("Connected to Server", Color.green);
         }
 
         //If not, check if build or editor:
-        if (Application.isEditor)
+        else if (Application.isEditor)
         {
-
             TryStartServer(Application.dataPath + "/../../server/app.js");
-            
-
-
         }
         else
         {
@@ -48,6 +45,7 @@ public class NetworkHandler : MonoBehaviour
     {
         if (startServer.StartServerProcess(filePath))
         {
+            Debug.Log("Server connected at: " + filePath);
             UpdateStatusMessage("Connected to Server", Color.green);
         }
         else
@@ -66,15 +64,45 @@ public class NetworkHandler : MonoBehaviour
     }
 
 
-    private void OnLevelWasLoaded(int level)
+    //private void OnLevelWasLoaded(int level)
+    //{
+    //    //Todo: Make this nonesense more dynamic and scalable
+    //    if (level == 1) //PLAYER
+    //    {
+    //        gameObject.AddComponent<NetworkPlayerMapUpdater>();
+    //        gameObject.AddComponent<NetworkPlayerMeshUpdater>();
+    //    }
+    //    else if (level == 2)    //DM
+    //    {
+    //        gameObject.AddComponent<NetworkDMMapUpdater>();
+    //        gameObject.AddComponent<NetworkDMMeshUpdater>();
+    //    }
+    //}
+
+
+    void OnEnable()
     {
-        //Todo: Make this nonesense more dynamic and scalable
-        if (level == 1) //PLAYER
+        //Tell our 'OnLevelFinishedLoading' function to start listening for a scene change as soon as this script is enabled.
+        SceneManager.sceneLoaded += OnLevelFinishedLoading;
+    }
+
+    void OnDisable()
+    {
+        //Tell our 'OnLevelFinishedLoading' function to stop listening for a scene change as soon as this script is disabled. Remember to always have an unsubscription for every delegate you subscribe to!
+        SceneManager.sceneLoaded -= OnLevelFinishedLoading;
+    }
+
+    void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("Level Loaded");
+        Debug.Log(scene.name);
+        Debug.Log(mode);
+        if (scene.name == "Player Main") //PLAYER
         {
             gameObject.AddComponent<NetworkPlayerMapUpdater>();
             gameObject.AddComponent<NetworkPlayerMeshUpdater>();
         }
-        else if (level == 2)    //DM
+        else if (scene.name == "DM Main")    //DM
         {
             gameObject.AddComponent<NetworkDMMapUpdater>();
             gameObject.AddComponent<NetworkDMMeshUpdater>();

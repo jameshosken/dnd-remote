@@ -27,7 +27,6 @@ public class DMCreationHandler : MonoBehaviour
     bool wallMode = false;
     public float placementRotation = 0;
 
-    //int wallClickCounter = 0;
     Vector3 wallStart = Vector3.zero;
 
     Vector3 wallEnd = Vector3.zero;
@@ -56,6 +55,7 @@ public class DMCreationHandler : MonoBehaviour
     public void ToggleWallMode(bool status)
     {
         wallMode = status;
+        UpdateIndicators();
     }
     void UpdatePlacementIndex()
     {
@@ -82,21 +82,26 @@ public class DMCreationHandler : MonoBehaviour
         }
         if (!placementIndicatorParent.gameObject.activeSelf) { placementIndicatorParent.gameObject.SetActive(true); }
 
-
-
         Vector3 mouseGridPos = interfaceHandler.GetMouseGridPosition();
 
         if (wallEnd != mouseGridPos)
         {
-            if (!wallMode) wallStart = mouseGridPos;    //Only place one tile if not in wall mode
-           
+            //if (!wallMode) wallStart = mouseGridPos;    //Only place one tile if not in wall mode
             wallEnd = mouseGridPos;
-            List<Vector3> ghostPositions = CalculateLineFromLastClick();
-            DestroyGhostIndicators();
-            CreateGhostIndicators(ghostPositions);
+
+            UpdateIndicators();
 
         }
 
+
+
+    }
+
+    void UpdateIndicators()
+    {
+        List<Vector3> ghostPositions = CalculateLineFromLastClick();
+        DestroyGhostIndicators();
+        CreateGhostIndicators(ghostPositions);   
     }
 
     private void CreateGhostIndicators(List<Vector3> positions)
@@ -109,6 +114,17 @@ public class DMCreationHandler : MonoBehaviour
 
         }
     }
+
+    //public void UpdateGhostMaterial(Material m)
+    //{
+    //    foreach (GameObject ghost in ghostIndicators)
+    //    {
+    //        foreach (Renderer renderer in ghost.GetComponentsInChildren<Renderer>())
+    //        {
+    //            renderer.material = m;
+    //        }
+    //    }
+    //}
 
     private void DestroyGhostIndicators()
     {
@@ -145,8 +161,6 @@ public class DMCreationHandler : MonoBehaviour
             return;
         }
 
-        //if (wallMode)
-        //{
 
             List<Vector3> nodes = CalculateLineFromLastClick();
 
@@ -156,11 +170,7 @@ public class DMCreationHandler : MonoBehaviour
             }
 
             DestroyGhostIndicators();       //Clear Placement Indicators after updating
-        //}
-        //else
-        //{
-        //    CreateNewObject(placementIndicator.transform.position);
-        //}
+
 
 
     }
@@ -168,7 +178,9 @@ public class DMCreationHandler : MonoBehaviour
     private List<Vector3> CalculateLineFromLastClick()
     {
 
-        Vector3 from = wallStart;
+        //if (!wallMode) wallStart = wallEnd;
+
+        Vector3 from = wallMode ? wallStart : wallEnd;
         Vector3 to = wallEnd;
         //Vector3 to = interfaceHandler.GetMouseGridPosition(); //Todo: Fix bug?
 

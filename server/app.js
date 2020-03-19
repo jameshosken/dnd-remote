@@ -6,6 +6,7 @@ var io = require('socket.io')(http);
 
 console.log('Requirements loaded');
 
+console.log(io);
 
 
 app.get('/', function(req, res){
@@ -49,6 +50,10 @@ http.once('error', function(err) {
   if (err.code === 'EADDRINUSE') {
     console.log('port in use');
     http.close();
+    setTimeout(() => {
+      
+      console.log("bye felicia")
+    }, 1000);
   }
 });
 
