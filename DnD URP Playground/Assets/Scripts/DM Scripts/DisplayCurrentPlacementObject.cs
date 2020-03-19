@@ -9,14 +9,14 @@ public class DisplayCurrentPlacementObject : MonoBehaviour
 {
     [SerializeField] Material ghostMaterial;
     [SerializeField] Dropdown objectPlacementDropdown;
-    DMCreationHandler creationHandler;
+    DMCreationHandler_August creationHandler;
 
     GameObject display;
 
     // Start is called before the first frame update
     void Start()
     {
-        creationHandler = GetComponentInParent<DMCreationHandler>();
+        creationHandler = GetComponentInParent<DMCreationHandler_August>();
         objectPlacementDropdown.onValueChanged.AddListener(delegate
         {
             OnDropdownUpdate();

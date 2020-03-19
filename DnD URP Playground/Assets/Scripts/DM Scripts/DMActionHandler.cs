@@ -13,7 +13,7 @@ public class DMActionHandler : MonoBehaviour
 
     [SerializeField] GameObject deleteIndicator;
 
-    DMInterfaceHandler interfaceHandler;
+    DMInterfaceHandler_August interfaceHandler;
     DMSelectionHandler selectionHandler;
     Text infoText;
 
@@ -23,7 +23,7 @@ public class DMActionHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        interfaceHandler = FindObjectOfType<DMInterfaceHandler>();
+        interfaceHandler = FindObjectOfType<DMInterfaceHandler_August>();
         selectionHandler = FindObjectOfType<DMSelectionHandler>();
         lineRenderer = GetComponent<LineRenderer>();
 
@@ -39,23 +39,23 @@ public class DMActionHandler : MonoBehaviour
         movementIndicator.transform.position = movepos;
         deleteIndicator.transform.position = delpos;
 
-        if (interfaceHandler.mode != DMInterfaceHandler.Mode.MOVE)
+        if (interfaceHandler.mode != DMInterfaceHandler_August.Mode.MOVE)
         {
             if (movementIndicator.activeSelf) movementIndicator.SetActive(false);
             if (lineRenderer.enabled) lineRenderer.enabled = false;
         }
-        if (interfaceHandler.mode != DMInterfaceHandler.Mode.DELETE)
+        if (interfaceHandler.mode != DMInterfaceHandler_August.Mode.DELETE)
         {
             if (deleteIndicator.activeSelf) deleteIndicator.SetActive(false);
         }
         switch (interfaceHandler.mode)
         {
-            case DMInterfaceHandler.Mode.MOVE:
+            case DMInterfaceHandler_August.Mode.MOVE:
                 if(!movementIndicator.activeSelf) movementIndicator.SetActive(true);
                 HandleSelectedObjectMove(movepos);
                 HandleMeasureTool(movepos);
                 break;
-            case (DMInterfaceHandler.Mode.DELETE):
+            case (DMInterfaceHandler_August.Mode.DELETE):
 
                 if (!deleteIndicator.activeSelf) deleteIndicator.SetActive(true);
                 HandleSelectedObjectDelete();

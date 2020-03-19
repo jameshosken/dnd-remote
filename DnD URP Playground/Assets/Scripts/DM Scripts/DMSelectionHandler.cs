@@ -14,28 +14,28 @@ public class DMSelectionHandler : MonoBehaviour
 
     Material selectionMaterial;
 
-    DMInterfaceHandler interfaceMode;
+    DMInterfaceHandler_August interfaceMode;
 
     // Start is called before the first frame update
     void Start()
     {
         main = Camera.main;
         selectionMaterial = Resources.Load("SelectionMaterial") as Material;
-        interfaceMode = FindObjectOfType<DMInterfaceHandler>();
+        interfaceMode = FindObjectOfType<DMInterfaceHandler_August>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (interfaceMode.mode == DMInterfaceHandler.Mode.PLACE)
+        if (interfaceMode.mode == DMInterfaceHandler_August.Mode.PLACE)
         {
             return;
         }
 
-        if (interfaceMode.mode == DMInterfaceHandler.Mode.SELECT ||
-            interfaceMode.mode == DMInterfaceHandler.Mode.MOVE ||
-            interfaceMode.mode == DMInterfaceHandler.Mode.DELETE ||
-            interfaceMode.mode == DMInterfaceHandler.Mode.MEASURE)
+        if (interfaceMode.mode == DMInterfaceHandler_August.Mode.SELECT ||
+            interfaceMode.mode == DMInterfaceHandler_August.Mode.MOVE ||
+            interfaceMode.mode == DMInterfaceHandler_August.Mode.DELETE ||
+            interfaceMode.mode == DMInterfaceHandler_August.Mode.MEASURE)
         {
             if (Input.GetMouseButtonDown(0))
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DMInterfaceHandler : MonoBehaviour
+public class DMInterfaceHandler_August : MonoBehaviour
 {
     public enum Mode
     {
@@ -21,7 +21,7 @@ public class DMInterfaceHandler : MonoBehaviour
 
 
     DMActionHandler actionHandler;
-    DMCreationHandler creationHandler;
+    DMCreationHandler_August creationHandler;
     
     int elevation = 0;
 
@@ -30,7 +30,7 @@ public class DMInterfaceHandler : MonoBehaviour
     private void Start()
     {
         actionHandler = FindObjectOfType<DMActionHandler>();
-        creationHandler = FindObjectOfType<DMCreationHandler>();
+        creationHandler = FindObjectOfType<DMCreationHandler_August>();
 
         List<string> selectionNames = new List<string>();
         int c = 1;

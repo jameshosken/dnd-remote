@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class DMMeasureHandler : MonoBehaviour
 {
 
-    DMInterfaceHandler interfaceHandler;
+    DMInterfaceHandler_August interfaceHandler;
 
     DMSelectionHandler selectionHandler;
 
@@ -17,7 +17,7 @@ public class DMMeasureHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        interfaceHandler = FindObjectOfType<DMInterfaceHandler>();
+        interfaceHandler = FindObjectOfType<DMInterfaceHandler_August>();
         selectionHandler = FindObjectOfType<DMSelectionHandler>();
         lineRenderer = GetComponent<LineRenderer>();
 

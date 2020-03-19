@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEditor;
 
-public class DMCreationHandler : MonoBehaviour
+public class DMCreationHandler_August : MonoBehaviour
 {
     [SerializeField] GameObject placementIndicator;
     [SerializeField] Dropdown placementDropdown;
@@ -21,14 +21,14 @@ public class DMCreationHandler : MonoBehaviour
     public int objectIdxToCreate = 0;
     public int materialIdxToAdd = 0;
 
-    DMInterfaceHandler interfaceHandler;
+    DMInterfaceHandler_August interfaceHandler;
 
     public float placementRotation = 0;
 
     // Start is called before the first frame update
     void Start()
     {
-        interfaceHandler = FindObjectOfType<DMInterfaceHandler>();
+        interfaceHandler = FindObjectOfType<DMInterfaceHandler_August>();
 
         placementDropdown.onValueChanged.AddListener(delegate {
             UpdatePlacementIndex();
@@ -70,7 +70,7 @@ public class DMCreationHandler : MonoBehaviour
     {
 
         //Don't update if placing
-        if (interfaceHandler.mode != DMInterfaceHandler.Mode.PLACE)
+        if (interfaceHandler.mode != DMInterfaceHandler_August.Mode.PLACE)
         {
             if (placementIndicator.activeSelf) { placementIndicator.SetActive(false); }
             return;
