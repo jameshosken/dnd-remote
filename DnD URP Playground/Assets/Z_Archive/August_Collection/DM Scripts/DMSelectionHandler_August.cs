@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 //Script handles selection
-public class DMSelectionHandler : MonoBehaviour
+public class DMSelectionHandler_August : MonoBehaviour
 {
     public GameObject selected = null;
     GameObject selectedIndicator = null;
@@ -13,19 +13,45 @@ public class DMSelectionHandler : MonoBehaviour
     Camera main;
 
     Material selectionMaterial;
-    DMMaterialsHandler materialsHandler;
 
+    DMInterfaceHandler_August interfaceMode;
 
     // Start is called before the first frame update
     void Start()
     {
         main = Camera.main;
         selectionMaterial = Resources.Load("SelectionMaterial") as Material;
-        //materialsHandler = FindObjectOfType<DMMaterialsHandler>();    //Todo implement materials change
+        interfaceMode = FindObjectOfType<DMInterfaceHandler_August>();
     }
 
+    // Update is called once per frame
+    void Update()
+    {
+        if (interfaceMode.mode == DMInterfaceHandler_August.Mode.PLACE)
+        {
+            return;
+        }
 
-    public void HandleSelection()
+        if (interfaceMode.mode == DMInterfaceHandler_August.Mode.SELECT ||
+            interfaceMode.mode == DMInterfaceHandler_August.Mode.MOVE ||
+            interfaceMode.mode == DMInterfaceHandler_August.Mode.DELETE ||
+            interfaceMode.mode == DMInterfaceHandler_August.Mode.MEASURE)
+        {
+            if (Input.GetMouseButtonDown(0))
+
+            {
+                HandlePrimaryMouseClick();
+            }
+
+        }
+    }
+
+    private void HandleSecondaryMouseClick()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void HandlePrimaryMouseClick()
     {
         Ray ray = main.ScreenPointToRay(Input.mousePosition);
 
@@ -47,6 +73,7 @@ public class DMSelectionHandler : MonoBehaviour
             {
                 //See if there's a better way to get parent of clicked object
                 GameObject DMSelection = clicked.GetComponentInParent<DMSelectable>().gameObject;
+
 
                 isSuccessfulSelection = TryNewSelection(DMSelection);
 

@@ -19,15 +19,18 @@ public class DMCreationHandler : MonoBehaviour
     public int objectIdxToCreate = 0;
 
     DMInterfaceHandler interfaceHandler;
+    DMMaterialsHandler materialsHandler;
+
 
     public float placementRotation = 0;
 
-    int wallClickCounter = 0;
+    //int wallClickCounter = 0;
     Vector3 wallStart = Vector3.zero;
 
     void Start()
     {
         interfaceHandler = FindObjectOfType<DMInterfaceHandler>();
+        materialsHandler = FindObjectOfType<DMMaterialsHandler>();
 
         placementDropdown.onValueChanged.AddListener(delegate
         {
@@ -178,6 +181,13 @@ public class DMCreationHandler : MonoBehaviour
             ) as GameObject;
         clone.name = placementObjects[objectIdxToCreate].name;
         clone.AddComponent<DMSelectable>();
+
+        //ADD MATERIAL TO NEW OBJECT
+
+        foreach (Renderer renderer in clone.GetComponentsInChildren<Renderer>())
+        {
+            renderer.material = materialsHandler.GetCurrentMaterial();
+        }
 
     }
 

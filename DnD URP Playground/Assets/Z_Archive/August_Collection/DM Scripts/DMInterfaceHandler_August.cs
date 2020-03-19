@@ -4,51 +4,42 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// Handles interaction with mouse and keyboard.
-/// </summary>
-public class DMInterfaceHandler : MonoBehaviour
+public class DMInterfaceHandler_August : MonoBehaviour
 {
     public enum Mode
     {
         SELECT,
         PLACE,
         MOVE,
-        DELETE
+        DELETE,
+        MEASURE
     }
 
     [SerializeField] Dropdown selectionModeDropdown;
     [SerializeField] Dropdown objectPlacementDropdown;
+    [SerializeField] Dropdown materialDropdown;
 
-    DMActionHandler actionHandler;
-    DMCreationHandler creationHandler;
-    DMSelectionHandler selectionHandler;
-    DMMaterialsHandler materialsHandler;
 
+    DMActionHandler_August actionHandler;
+    DMCreationHandler_August creationHandler;
+    
     int elevation = 0;
 
     public Mode mode = Mode.SELECT;
-    public Vector3 lastClickedLocation = Vector3.zero;
+
     private void Start()
     {
-        actionHandler = FindObjectOfType<DMActionHandler>();
-        creationHandler = FindObjectOfType<DMCreationHandler>();
-        selectionHandler = FindObjectOfType<DMSelectionHandler>();
-        materialsHandler = FindObjectOfType<DMMaterialsHandler>();
+        actionHandler = FindObjectOfType<DMActionHandler_August>();
+        creationHandler = FindObjectOfType<DMCreationHandler_August>();
 
         List<string> selectionNames = new List<string>();
         int c = 1;
-        foreach (var m in Enum.GetNames(typeof(Mode)))
+        foreach  (var m in Enum.GetNames(typeof(Mode)))
         {
             selectionNames.Add("(" + c.ToString() + ") " + m);
             c++;
         }
         selectionModeDropdown.AddOptions(selectionNames);
-
-        selectionModeDropdown.onValueChanged.AddListener(delegate
-        {
-            ChangeMode(selectionModeDropdown.value);
-        });
     }
 
     private void Update()
@@ -57,68 +48,7 @@ public class DMInterfaceHandler : MonoBehaviour
         HandleObjectTypeChangeKeypress(KeyCode.T);
         HandleMouseModeChangeKeypress();
         HandleObjectRotation(KeyCode.Q, KeyCode.E);
-        HandleMaterialChange(KeyCode.M);
-
-        HandlePrimaryMouseClick();
-        HandleSecondaryMouseClick();
-
-    }
-
-    //Fired by dropdown
-    public void ChangeMode(int m)
-    {
-        //Changes mouse interaction mode
-        mode = (Mode)m;
-        Debug.Log("Mode Changed: " + mode);
-    }
-
-    public void ChangeModeByName(Mode m)
-    {
-        mode = m;
-        Debug.Log("Mode Changed By Name: " + mode);
-    }
-
-    private void HandleMaterialChange(KeyCode key)
-    {
-        if (Input.GetKeyDown(key))
-        {
-            materialsHandler.CycleMaterial();
-        }
-    }
-
-    private void HandleSecondaryMouseClick()
-    {
-        if (Input.GetMouseButtonDown(1))
-        {
-            if(mode == DMInterfaceHandler.Mode.MOVE)actionHandler.HandleSelectedObjectMove();
-        }
-    }
-
-    private void HandlePrimaryMouseClick()
-    {
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            
-            //Horrific 'if' nest:
-            if (mode == DMInterfaceHandler.Mode.PLACE)
-            {
-                creationHandler.HandleObjectPlacement();
-            }
-            else if (mode == DMInterfaceHandler.Mode.SELECT ||
-                        mode == DMInterfaceHandler.Mode.MOVE ||
-                        mode == DMInterfaceHandler.Mode.DELETE )
-            {
-                selectionHandler.HandleSelection();
-            }
-
-            actionHandler.UpdateMeasureToolStart();
-
-            //Applies to all modes, AFTER all above functions:
-            lastClickedLocation = GetMouseGridPosition();
-
-
-        }
+        HandleMaterialChangeKeypress(KeyCode.M);
 
     }
 
@@ -128,8 +58,7 @@ public class DMInterfaceHandler : MonoBehaviour
         {
             actionHandler.HandleSelectedObjectRotate(-1);
             creationHandler.RotatePlacement(-1);
-        }
-        else if (Input.GetKeyDown(cw))
+        }else if (Input.GetKeyDown(cw))
         {
             actionHandler.HandleSelectedObjectRotate(1);
             creationHandler.RotatePlacement(1);
@@ -138,7 +67,7 @@ public class DMInterfaceHandler : MonoBehaviour
 
     private void HandleMouseModeChangeKeypress()
     {
-
+        
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             selectionModeDropdown.value = 0;
@@ -176,6 +105,27 @@ public class DMInterfaceHandler : MonoBehaviour
         }
     }
 
+    private void HandleMaterialChangeKeypress(KeyCode key)
+    {
+        if (Input.GetKeyDown(key))
+        {
+            int n = (materialDropdown.value + 1) % materialDropdown.options.Count;
+            materialDropdown.value = n;
+
+        }
+    }
+
+    public void ChangeMode(int m) {
+        //Changes mouse interaction mode
+        mode = (Mode)m;
+        Debug.Log("Mode Changed: " + mode);
+    }
+
+    public void ChangeModeByName(Mode m)
+    {
+        mode = m;
+        Debug.Log("Mode Changed By Name: " + mode);
+    }
 
     public Vector3 GetMouseGridPosition()
     {
@@ -222,7 +172,7 @@ public class DMInterfaceHandler : MonoBehaviour
         }
         if (Input.GetKeyDown(down))
         {
-            if (elevation > 0)
+            if(elevation > 0)
             {
                 elevation--;
             }
