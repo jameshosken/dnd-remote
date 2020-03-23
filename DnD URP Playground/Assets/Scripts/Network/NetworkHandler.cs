@@ -56,12 +56,13 @@ public class NetworkHandler : MonoBehaviour
 
         if(serverID != "")
         {
-            socket.url = "ws://" + serverID + ".ngrok.io/socket.io/?EIO=4&transport=websocket";
+            //socket.io/?EIO=4&transport=websocket
+            socket.url = "ws://" + serverID + ".ngrok.io";
 
             socket.Connect();
 
-            Debug.Log("Socket URL:");
-            Debug.Log(socket.url);
+            Debug.LogWarning("Socket URL:");
+            Debug.LogWarning(socket.url);
         }
         else
         {
@@ -94,6 +95,7 @@ public class NetworkHandler : MonoBehaviour
             TryStartServer(serverPath);
         }
 
+        socket.Connect();
         //Start pinging server for url
         StartCoroutine(RequestNewNgrokURL());
         socket.On("ngrok-url", OnNewNgrokURL);
@@ -103,10 +105,11 @@ public class NetworkHandler : MonoBehaviour
     {
         string url = data.data.GetField("url").ToString();
 
+        Debug.Log("NewGrokUR: " + url);
         if (url != "")
         {
+            Debug.Log("Successful Data Received!");
             hasNgrokURL = true;
-
             string[] chunk = url.Split('.');
             string id = chunk[0].Split(new string[] { "//" }, System.StringSplitOptions.None)[1];
             UpdateStatusMessage("Your server ID: " + id, Color.green);
@@ -116,10 +119,11 @@ public class NetworkHandler : MonoBehaviour
 
     IEnumerator RequestNewNgrokURL()
     {
-        if (!socket.IsConnected) yield return null;
+        //if (!socket.IsConnected) yield return null;
         
-
         while(!hasNgrokURL){
+
+            Debug.Log("Requesting");
             socket.Emit("request-ngrok-url");
             yield return new WaitForSeconds(3);
         }
@@ -128,9 +132,11 @@ public class NetworkHandler : MonoBehaviour
 
     public void TryStartServer(string filePath)
     {
+
+        Debug.LogWarning("Trynig to connect to server");
         if (startServer.StartServerProcess(filePath))
         {
-            Debug.Log("Server connected at: " + filePath);
+            Debug.LogWarning("Server connected at: " + filePath);
             UpdateStatusMessage("Connected to Server", Color.green);
             
         }
