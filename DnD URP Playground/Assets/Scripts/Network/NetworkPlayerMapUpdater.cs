@@ -17,6 +17,7 @@ public class NetworkPlayerMapUpdater : MonoBehaviour
 
     void Start()
     {
+
         mapHandler = FindObjectOfType<PlayerMapHandler>();
         socket = GetComponent<SocketIOComponent>();
         newMap = new Map();
@@ -24,6 +25,8 @@ public class NetworkPlayerMapUpdater : MonoBehaviour
 
         socket.On("update-map", UpdateMap);
     }
+
+   
 
     private void UpdateMap(SocketIOEvent obj)
     {

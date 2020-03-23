@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class StartNodeServer : MonoBehaviour
 {
-
+    Process process;
     public bool StartServerProcess(string filePath)
     {
     
@@ -17,7 +17,7 @@ public class StartNodeServer : MonoBehaviour
             string startCommand = @"node '" + filePath + "'";
             UnityEngine.Debug.LogWarning(startCommand);
 
-            Process process = new Process();
+            process = new Process();
 
             process.StartInfo.FileName = "powershell.exe";
             process.StartInfo.Arguments = startCommand;
@@ -27,6 +27,7 @@ public class StartNodeServer : MonoBehaviour
             process.StartInfo.UseShellExecute = true;
 
             bool success = process.Start(); //Start cmd process
+
 
             return success;
             //process.WaitForInputIdle();
@@ -40,6 +41,14 @@ public class StartNodeServer : MonoBehaviour
         return false;
     }
 
+    private void OnDestroy()
+    {
+        //process.Kill();
+    }
+    private void OnApplicationQuit()
+    {
+        //process.Close();
+    }
 }
 
 

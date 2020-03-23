@@ -1,13 +1,18 @@
 
   console.log('Starting Server');
-var app = require('express')();
+
+// const localtunnel = require('localtunnel'); // expose port to the world
+const ngrok = require('ngrok');
+
+  var app = require('express')();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 
+
 console.log('Requirements loaded');
 
-console.log(io);
 
+let ngrok_url = '';
 
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
@@ -17,8 +22,10 @@ io.on('connection', function(socket){
 
   console.log('a user connected');
 
-  socket.on('test-message', function(data){
-    console.log(data);
+  socket.on('request-ngrok-url', function(data){
+    
+    console.log('URL requested, sending: ' + ngrok_url);
+    socket.emit('ngrok-url', {url: ngrok_url});
   });
 
   socket.on('dm-update-map', function(data){
@@ -57,7 +64,24 @@ http.once('error', function(err) {
   }
 });
 
-http.listen(3000, function(){
+(async function() {
+  ngrok_url = await ngrok.connect(9090);
+  console.log('ngrok url: ' + ngrok_url);
+
+})();
+
+// (async () => {
+//   const tunnel = await localtunnel({ port: 3000 });
+
+//   console.log("Tunnel: " + tunnel.url);
+
+//   tunnel.on('close', () => {
+//     // tunnels are closed
+//     console.log('Tunnel closed, goodbye!')
+//   });
+// })();
+
+http.listen(9090, function(){
   console.log('listening on *:3000');
-  
 });
+

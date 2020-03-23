@@ -4,6 +4,8 @@
     "description": "Test server for DnD AR",
     "dependencies": {
         "express": "^4.17.1",
+        "localtunnel": "^2.0.0",
+        "ngrok": "^3.2.7",
         "socket.io": "^2.3.0"
     }
 }
