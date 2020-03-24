@@ -13,6 +13,7 @@ public class SerializedTile
     public int uid;
     public Vector3 location;
     public Vector3 rotation;
+    public string materialName;
 
     public SerializedTile(string name, int _uid)
     {

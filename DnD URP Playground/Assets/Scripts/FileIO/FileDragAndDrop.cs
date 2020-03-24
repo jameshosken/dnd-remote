@@ -50,7 +50,7 @@ public class FileDragAndDrop : MonoBehaviour
             }
             else if(ext == "js")
             {
-                network.TryStartServer(filePath);
+                //network.OnServerFileDropped(filePath);
             }
             else
             {

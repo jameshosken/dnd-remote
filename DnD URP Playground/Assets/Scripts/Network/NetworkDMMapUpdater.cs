@@ -53,6 +53,7 @@ public class NetworkDMMapUpdater : MonoBehaviour
         ConstructMapFromObjects();
 
         var json_map = JSONObject.Create(JsonUtility.ToJson(map));
+        Debug.Log(json_map.ToString());
         socket.Emit("dm-update-map", json_map);
     }
 
