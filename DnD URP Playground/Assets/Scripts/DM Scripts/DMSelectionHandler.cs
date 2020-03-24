@@ -13,7 +13,7 @@ public class DMSelectionHandler : MonoBehaviour
     Camera main;
 
     Material selectionMaterial;
-    DMMaterialsHandler materialsHandler;
+    GenericMaterialsHandler materialsHandler;
 
 
     // Start is called before the first frame update

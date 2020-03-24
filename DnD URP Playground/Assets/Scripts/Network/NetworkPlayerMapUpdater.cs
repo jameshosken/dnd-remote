@@ -9,6 +9,7 @@ public class NetworkPlayerMapUpdater : MonoBehaviour
     public List<SerializedTile> tiles;
 
     PlayerMapHandler mapHandler;
+    GenericMaterialsHandler materialsHandler;
 
     SocketIOComponent socket;
     Map newMap;
@@ -19,6 +20,8 @@ public class NetworkPlayerMapUpdater : MonoBehaviour
     {
 
         mapHandler = FindObjectOfType<PlayerMapHandler>();
+        materialsHandler = FindObjectOfType<GenericMaterialsHandler>();
+
         socket = GetComponent<SocketIOComponent>();
         newMap = new Map();
         currentMap = new Map();
@@ -31,6 +34,7 @@ public class NetworkPlayerMapUpdater : MonoBehaviour
     private void UpdateMap(SocketIOEvent obj)
     {
         newMap = JsonUtility.FromJson<Map>(obj.data.ToString());
+        Debug.Log(obj.ToString());
         CompareMaps();
     }
 
@@ -47,8 +51,9 @@ public class NetworkPlayerMapUpdater : MonoBehaviour
             {
                 if (CompareTiles(currTile, newMap.tiles[i]))
                 {
-                    //Determine if location must be updated:
-                    UpdateTileLocation(currTile, newMap.tiles[i]);
+                    //Determine if tile must be updated:
+                    //For now it's a brute force 'if anything is different change everything' approach. Todo: change.
+                    UpdateTileInformation(currTile, newMap.tiles[i]);
                     contains = true;
                     break;
                 }
@@ -77,6 +82,37 @@ public class NetworkPlayerMapUpdater : MonoBehaviour
         
     }
 
+    private void UpdateTileInformation(SerializedTile currTile, SerializedTile newTile)
+    {
+        UpdateTileLocation(currTile, newTile);
+        UpdateTileMaterial(currTile, newTile);
+    }
+
+    private void UpdateTileMaterial(SerializedTile currTile, SerializedTile newTile)
+    {
+        
+        if (CompareTileMaterial(currTile, newTile))
+        {
+            Debug.Log("Updating Tile Material");
+            return;
+        }
+        else
+        {
+            Debug.Log("Updating Tile Material");
+            Material m = materialsHandler.GetMaterialByName(currTile.materialName);
+            GameObject go = GameObject.Find(GetNameFromTileUID(currTile));
+
+            Renderer[] renderers = go.GetComponentsInChildren<Renderer>();
+            foreach (Renderer r in renderers)
+            {
+                r.material = m;
+            }
+
+        }
+    }
+
+
+
     private void UpdateTileLocation(SerializedTile currTile, SerializedTile newTile)
     {
         if(CompareTilePSR(currTile, newTile))
@@ -100,6 +136,11 @@ public class NetworkPlayerMapUpdater : MonoBehaviour
     bool CompareTiles(SerializedTile t1, SerializedTile t2)
     {
         return t1.uid == t2.uid;
+    }
+
+    bool CompareTileMaterial(SerializedTile t1, SerializedTile t2)
+    {
+        return (t1.materialName == t2.materialName);
     }
 
     bool CompareTilePSR(SerializedTile t1, SerializedTile t2)

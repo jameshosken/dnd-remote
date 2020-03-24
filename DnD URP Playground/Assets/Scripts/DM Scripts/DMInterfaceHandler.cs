@@ -23,7 +23,7 @@ public class DMInterfaceHandler : MonoBehaviour
     DMActionHandler actionHandler;
     DMCreationHandler creationHandler;
     DMSelectionHandler selectionHandler;
-    DMMaterialsHandler materialsHandler;
+    GenericMaterialsHandler materialsHandler;
 
     int elevation = 0;
 
@@ -34,7 +34,7 @@ public class DMInterfaceHandler : MonoBehaviour
         actionHandler = FindObjectOfType<DMActionHandler>();
         creationHandler = FindObjectOfType<DMCreationHandler>();
         selectionHandler = FindObjectOfType<DMSelectionHandler>();
-        materialsHandler = FindObjectOfType<DMMaterialsHandler>();
+        materialsHandler = FindObjectOfType<GenericMaterialsHandler>();
 
         List<string> selectionNames = new List<string>();
         int c = 1;

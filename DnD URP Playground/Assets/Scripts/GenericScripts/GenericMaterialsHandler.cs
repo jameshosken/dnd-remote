@@ -6,12 +6,14 @@ using UnityEngine.UI;
 
 //Contributions by augutluhrs
 
-public class DMMaterialsHandler : MonoBehaviour
+public class GenericMaterialsHandler : MonoBehaviour
 {
 
-    [SerializeField] Dropdown materialDropdown;
+    [SerializeField] Dropdown materialDropdown; //hide for player
 
     List<Material> materialList = new List<Material>();
+
+    Dictionary<string, Material> materialDictionary = new Dictionary<string, Material>();
 
     int currentMaterialIndex = 0;
 
@@ -27,6 +29,12 @@ public class DMMaterialsHandler : MonoBehaviour
         });
     }
 
+    public Material GetMaterialByName(string name)
+    {
+
+        return materialDictionary[name];
+    }
+
     private void LoadMaterials()
     {
         Material[] resourceMaterials = Resources.LoadAll<Material>("Object Materials");
@@ -34,6 +42,8 @@ public class DMMaterialsHandler : MonoBehaviour
         foreach (Material material in resourceMaterials)
         {
             materialList.Add(material);
+
+            materialDictionary.Add(material.name, material);
         }
     }
 

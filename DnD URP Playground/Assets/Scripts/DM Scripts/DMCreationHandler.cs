@@ -22,7 +22,7 @@ public class DMCreationHandler : MonoBehaviour
     public int objectIdxToCreate = 0;
 
     DMInterfaceHandler interfaceHandler;
-    DMMaterialsHandler materialsHandler;
+    GenericMaterialsHandler materialsHandler;
 
     bool wallMode = false;
     public float placementRotation = 0;
@@ -35,7 +35,7 @@ public class DMCreationHandler : MonoBehaviour
     void Start()
     {
         interfaceHandler = FindObjectOfType<DMInterfaceHandler>();
-        materialsHandler = FindObjectOfType<DMMaterialsHandler>();
+        materialsHandler = FindObjectOfType<GenericMaterialsHandler>();
 
         placementDropdown.onValueChanged.AddListener(delegate
         {

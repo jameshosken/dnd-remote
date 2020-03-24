@@ -22,6 +22,7 @@ public class DMSelectable : MonoBehaviour
         tile = new SerializedTile(gameObject.name, gameObject.GetHashCode());
 
         myMaterial = GetComponentInChildren<Renderer>().material;
+        tile.materialName = myMaterial.name.Replace("(Instance)", "").Trim();
     }
 
     private void Update()
@@ -33,8 +34,8 @@ public class DMSelectable : MonoBehaviour
         //Look for first material in children. If new, update myMaterial and tile material;
         if (myMaterial.name != GetComponentInChildren<Renderer>().material.name)
         {
-            myMaterial = GetComponentInChildren<Renderer>().material;
             tile.materialName = myMaterial.name;
+            Debug.LogWarning("Updating Tile Material: " + myMaterial.name);
         }
     }
 
