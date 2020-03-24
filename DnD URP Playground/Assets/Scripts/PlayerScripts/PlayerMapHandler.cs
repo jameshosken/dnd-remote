@@ -48,7 +48,7 @@ public class PlayerMapHandler : MonoBehaviour
 
     public void CreateNewGameobjectFromTile(SerializedTile newTile, Map currentMap)
     {
-        Debug.LogWarning("Creating New GO From Tile");
+        //Debug.LogWarning("Creating New GO From Tile");
 
         string newTileName = newTile.prefabName;
 

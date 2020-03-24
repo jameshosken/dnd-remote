@@ -9,7 +9,7 @@ using UnityEditor;
 public class DMCreationHandler_August : MonoBehaviour
 {
     [SerializeField] GameObject placementIndicator;
-    [SerializeField] Dropdown placementDropdown;
+    public Dropdown placementDropdown;
     [SerializeField] Dropdown materialDropdown;
     [SerializeField] DMSelectionHandler_August dmSelectionHandler;
     [SerializeField] Transform hiddenStorage;

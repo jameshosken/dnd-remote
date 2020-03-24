@@ -9,6 +9,7 @@ public class DMSelectable : MonoBehaviour
 
     public SerializedTile tile;
 
+    Material myMaterial;
     private void Start()
     {
     
@@ -20,12 +21,23 @@ public class DMSelectable : MonoBehaviour
 
         tile = new SerializedTile(gameObject.name, gameObject.GetHashCode());
 
+        myMaterial = GetComponentInChildren<Renderer>().material;
     }
 
     private void Update()
     {
         tile.location = transform.position;
         tile.rotation = transform.rotation.eulerAngles;
+
+        //Doesn't work. Fix
+        //Look for first material in children. If new, update myMaterial and tile material;
+        if (myMaterial.name != GetComponentInChildren<Renderer>().material.name)
+        {
+            myMaterial = GetComponentInChildren<Renderer>().material;
+            tile.materialName = myMaterial.name;
+        }
     }
+
+
 
 }

@@ -5,8 +5,6 @@ using SocketIO;
 
 public class NetworkDMMeshUpdater : MonoBehaviour
 {
-
-
     SerializedMeshArray meshes = new SerializedMeshArray();
     SocketIOComponent socket;
 

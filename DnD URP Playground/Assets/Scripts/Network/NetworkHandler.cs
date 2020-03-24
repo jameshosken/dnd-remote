@@ -3,57 +3,52 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using SocketIO;
+using UnityEngine.SceneManagement;
+using System;
 
-[RequireComponent(typeof(StartNodeServer))]
 [RequireComponent(typeof(SocketIOComponent))]
 
 public class NetworkHandler : MonoBehaviour
 {
     [SerializeField] Text status;
-    StartNodeServer startServer;
+    [SerializeField] InputField serverIDInput;
+
     SocketIOComponent socket;
+
+    int role = 0; //player = 0, dm = 1; Todo: this is dumb, make this a singular system accessible to all scripts
+
+    string serverID = "";
+    string serverPath = "https://closed-protective-pudding.glitch.me/";
 
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
-        DontDestroyOnLoad(status.gameObject);
 
         socket = GetComponent<SocketIOComponent>();
-        startServer = GetComponent<StartNodeServer>();
 
-        //Check if connection exists:
-        if (socket.IsConnected)
-        {
-            UpdateStatusMessage("Connected to Server", Color.green);
-        }
+    }
 
-        //If not, check if build or editor:
-        if (Application.isEditor)
-        {
+    //Fired by role dropdown
+    public void OnRoleChange(int r)
+    {
+        role = r;
+    }
 
-            TryStartServer(Application.dataPath + "/../../server/app.js");
-            
-
-
-        }
-        else
-        {
-            //if build, do nothing. Requires manual server input
-        }
+    public void OnStartServerClicked()
+    {
+        socket.url = serverPath;
+        socket.Connect();
+        socket.On("hello", OnHello);
+        Debug.LogWarning("Socket URL:");
+        Debug.LogWarning(socket.url);
+        return;
 
 
     }
 
-    public void TryStartServer(string filePath)
+    private void OnHello(SocketIOEvent obj)
     {
-        if (startServer.StartServerProcess(filePath))
-        {
-            UpdateStatusMessage("Connected to Server", Color.green);
-        }
-        else
-        {
-            UpdateStatusMessage("Problem connecting to server ¯\\_(ツ)_/¯", Color.red);
-        }
+        UpdateStatusMessage("Connection Successful!", Color.green);
     }
 
     void UpdateStatusMessage(string msg, Color col)
@@ -65,16 +60,29 @@ public class NetworkHandler : MonoBehaviour
         }
     }
 
-
-    private void OnLevelWasLoaded(int level)
+    void OnEnable()
     {
-        //Todo: Make this nonesense more dynamic and scalable
-        if (level == 1) //PLAYER
+        //Tell our 'OnLevelFinishedLoading' function to start listening for a scene change as soon as this script is enabled.
+        SceneManager.sceneLoaded += OnLevelFinishedLoading;
+    }
+
+    void OnDisable()
+    {
+        //Tell our 'OnLevelFinishedLoading' function to stop listening for a scene change as soon as this script is disabled. Remember to always have an unsubscription for every delegate you subscribe to!
+        SceneManager.sceneLoaded -= OnLevelFinishedLoading;
+    }
+
+    void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("Level Loaded");
+        Debug.Log(scene.name);
+        Debug.Log(mode);
+        if (scene.name == "Player Main") //PLAYER
         {
             gameObject.AddComponent<NetworkPlayerMapUpdater>();
             gameObject.AddComponent<NetworkPlayerMeshUpdater>();
         }
-        else if (level == 2)    //DM
+        else if (scene.name == "DM Main")    //DM
         {
             gameObject.AddComponent<NetworkDMMapUpdater>();
             gameObject.AddComponent<NetworkDMMeshUpdater>();
