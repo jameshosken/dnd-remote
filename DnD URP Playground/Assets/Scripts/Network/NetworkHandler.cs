@@ -6,7 +6,6 @@ using SocketIO;
 using UnityEngine.SceneManagement;
 using System;
 
-[RequireComponent(typeof(StartNodeServer))]
 [RequireComponent(typeof(SocketIOComponent))]
 
 public class NetworkHandler : MonoBehaviour
@@ -14,22 +13,18 @@ public class NetworkHandler : MonoBehaviour
     [SerializeField] Text status;
     [SerializeField] InputField serverIDInput;
 
-    StartNodeServer startServer;
     SocketIOComponent socket;
-
-    bool hasNgrokURL = false;
 
     int role = 0; //player = 0, dm = 1; Todo: this is dumb, make this a singular system accessible to all scripts
 
     string serverID = "";
-    string serverPath = "";
+    string serverPath = "https://closed-protective-pudding.glitch.me/";
 
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
 
         socket = GetComponent<SocketIOComponent>();
-        startServer = GetComponent<StartNodeServer>();
 
     }
 
@@ -41,109 +36,19 @@ public class NetworkHandler : MonoBehaviour
 
     public void OnStartServerClicked()
     {
-        if(role == 0)
-        {
-            StartPlayerNetworkHandler();
-        }else if(role == 1)
-        {
-            StartDMNetworkHandler();
-        }
-    }
-
-    private void StartPlayerNetworkHandler()
-    {
-        serverID = serverIDInput.text;
-
-        if(serverID != "")
-        {
-            //socket.io/?EIO=4&transport=websocket
-            socket.url = "ws://" + serverID + ".ngrok.io";
-
-            socket.Connect();
-
-            Debug.LogWarning("Socket URL:");
-            Debug.LogWarning(socket.url);
-        }
-        else
-        {
-            Debug.LogError("ServerID not valid");
-        }
-    }
-
-    public void OnServerFileDropped(string file)
-    {
-        serverPath = file;
-    }
-
-    public void StartDMNetworkHandler()
-    {
-
-        //Check if connection exists:
-        if (socket.IsConnected)
-        {
-            Debug.LogWarning("Already connected to socket");
-            UpdateStatusMessage("Connected to Server", Color.green);
-        }
-
-        //If not, check if build or editor:
-        if (Application.isEditor)
-        {
-            TryStartServer(Application.dataPath + "/../../server/app.js");
-        }
-        else
-        {
-            TryStartServer(serverPath);
-        }
-
+        socket.url = serverPath;
         socket.Connect();
-        //Start pinging server for url
-        StartCoroutine(RequestNewNgrokURL());
-        socket.On("ngrok-url", OnNewNgrokURL);
-    }
+        socket.On("hello", OnHello);
+        Debug.LogWarning("Socket URL:");
+        Debug.LogWarning(socket.url);
+        return;
 
-    void OnNewNgrokURL(SocketIOEvent data)
-    {
-        string url = data.data.GetField("url").ToString();
-
-        Debug.Log("NewGrokUR: " + url);
-        if (url != "")
-        {
-            Debug.Log("Successful Data Received!");
-            hasNgrokURL = true;
-            string[] chunk = url.Split('.');
-            string id = chunk[0].Split(new string[] { "//" }, System.StringSplitOptions.None)[1];
-            UpdateStatusMessage("Your server ID: " + id, Color.green);
-        }
 
     }
 
-    IEnumerator RequestNewNgrokURL()
+    private void OnHello(SocketIOEvent obj)
     {
-        //if (!socket.IsConnected) yield return null;
-        
-        while(!hasNgrokURL){
-
-            Debug.Log("Requesting");
-            socket.Emit("request-ngrok-url");
-            yield return new WaitForSeconds(3);
-        }
-
-    }
-
-    public void TryStartServer(string filePath)
-    {
-
-        Debug.LogWarning("Trynig to connect to server");
-        if (startServer.StartServerProcess(filePath))
-        {
-            Debug.LogWarning("Server connected at: " + filePath);
-            UpdateStatusMessage("Connected to Server", Color.green);
-            
-        }
-        else
-        {
-            UpdateStatusMessage("Problem connecting to server ¯\\_(ツ)_/¯", Color.red);
-        }
+        UpdateStatusMessage("Connection Successful!", Color.green);
     }
 
     void UpdateStatusMessage(string msg, Color col)
@@ -154,6 +59,7 @@ public class NetworkHandler : MonoBehaviour
             status.color = col;
         }
     }
+
     void OnEnable()
     {
         //Tell our 'OnLevelFinishedLoading' function to start listening for a scene change as soon as this script is enabled.

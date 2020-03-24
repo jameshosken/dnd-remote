@@ -2856,12 +2856,14 @@ PrefabInstance:
     - target: {fileID: 8648783824394526908, guid: 2ce4a67e3589efa4da2fa68a8b79e973,
         type: 3}
       propertyPath: url
-      value: ws://127.0.0.1:9090/socket.io/?EIO=4&transport=websocket
+      value: ws://closed-protective-pudding.glitch.me//socket.io/?EIO=4&transport=websocket
       objectReference: {fileID: 0}
     - target: {fileID: 8648783824394526908, guid: 2ce4a67e3589efa4da2fa68a8b79e973,
         type: 3}
       propertyPath: autoConnect
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5161066783039962305, guid: 2ce4a67e3589efa4da2fa68a8b79e973, type: 3}
+    - {fileID: 8159482518646404474, guid: 2ce4a67e3589efa4da2fa68a8b79e973, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 2ce4a67e3589efa4da2fa68a8b79e973, type: 3}
