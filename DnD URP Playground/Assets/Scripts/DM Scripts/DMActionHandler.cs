@@ -77,7 +77,9 @@ public class DMActionHandler : MonoBehaviour
         
         if (!lineRenderer.enabled) lineRenderer.enabled = true;
 
-        if (selectionHandler.selected != null) p1 = selectionHandler.selected.transform.position;
+        GameObject latest = selectionHandler.GetLatestSelection();
+
+        if (latest != null) p1 = latest.transform.position;
         
         Vector3 p2 = interfaceHandler.GetMouseGridPosition();
 
@@ -92,24 +94,32 @@ public class DMActionHandler : MonoBehaviour
 
     public void HandleSelectedObjectRotate(int dir)
     {
-        if(selectionHandler.selected != null) selectionHandler.selected.transform.Rotate(Vector3.up * 90 * dir);
+        foreach (GameObject selected in selectionHandler.GetAllSelectedObjects())
+        {
+            selected.transform.Rotate(Vector3.up * 90 * dir);
+        }
     }
 
     private void HandleSelectedObjectDelete()
     {
-        if (selectionHandler.selected != null)
+
+        List<GameObject> copy = new List<GameObject>(selectionHandler.GetAllSelectedObjects());
+
+        selectionHandler.TryClearSelection();
+        for (int i = copy.Count-1; i >=0; i--)
         {
-            GameObject toDestroy = selectionHandler.selected;
-            selectionHandler.TryClearSelection();
+            GameObject toDestroy = copy[i];
             GameObject.Destroy(toDestroy);
         }
+
+        copy.Clear();
     }
 
     public void HandleSelectedObjectMove()
     {
-        if(selectionHandler.selected != null)
+        foreach (GameObject selected in selectionHandler.GetAllSelectedObjects())
         {
-            selectionHandler.selected.transform.position = movementIndicator.transform.position;
+            selected.transform.position = movementIndicator.transform.position;
         }
        
     }

@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 //Script handles selection
 public class DMSelectionHandler : MonoBehaviour
 {
-    public GameObject selected = null;
+    public List<GameObject> allSelectedObjects = new List<GameObject>();
     GameObject selectedIndicator = null;
 
     Camera main;
@@ -31,7 +31,7 @@ public class DMSelectionHandler : MonoBehaviour
 
         RaycastHit hit;
 
-        bool isSuccessfulSelection = false;
+        bool isSuccessfulSelection = false; 
 
         //Prevent clicks when over UI:
         if (EventSystem.current.IsPointerOverGameObject())
@@ -45,11 +45,24 @@ public class DMSelectionHandler : MonoBehaviour
 
             if (clicked.GetComponentInParent<DMSelectable>())
             {
-                //See if there's a better way to get parent of clicked object
-                GameObject DMSelection = clicked.GetComponentInParent<DMSelectable>().gameObject;
+                isSuccessfulSelection = true;
 
-                isSuccessfulSelection = TryNewSelection(DMSelection);
+                GameObject attemptedSelection = clicked.GetComponentInParent<DMSelectable>().gameObject;
+                GameObject toRemove = null;
+                Debug.Log("Attempting Selection: " + attemptedSelection.name);
 
+
+                foreach (GameObject selected in allSelectedObjects)
+                {
+                    if (IsDuplicateSelection(attemptedSelection))
+                    {
+                        toRemove = attemptedSelection;
+                        break;
+                    }
+                }
+
+                if (toRemove) RemoveFromSelection(toRemove);
+                else AddToSelection(attemptedSelection);
             }
         }
 
@@ -59,26 +72,59 @@ public class DMSelectionHandler : MonoBehaviour
         }
     }
 
+    private bool IsDuplicateSelection(GameObject attemptedSelection)
+    {
+        foreach (GameObject selected in allSelectedObjects)
+        {
+            if (attemptedSelection.GetHashCode() == selected.GetHashCode())
+            {
+                Debug.Log("Selection already in list, flag to remove: " + attemptedSelection);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void AddToSelection(GameObject toAdd)
+    {
+        Debug.Log("Adding to list: " + toAdd.name);
+        ActivateSelectionShader(toAdd);
+        allSelectedObjects.Add(toAdd);
+    }
+
     public void TryClearSelection()
     {
-        TryDeactivateShader(selected);
-        selected = null;
+
+        foreach (GameObject selected in allSelectedObjects)
+        {
+            TryDeactivateShader(selected);
+        }
+        allSelectedObjects.Clear();
+
         Debug.Log("Cleared Selection");
     }
 
-    public bool TryNewSelection(GameObject newSelection)
+    void RemoveFromSelection(GameObject toRemove)
     {
-        if (selected == newSelection)
-        {
-            return false;
-        }
-
-        TryDeactivateShader(selected);
-        selected = newSelection;
-        ActivateSelectionShader(selected);
-        Debug.Log("New Selection: " + selected.name);
-        return true;
+        Debug.Log("Removing: " + toRemove.name);
+        TryDeactivateShader(toRemove);
+        allSelectedObjects.Remove(toRemove);
     }
+
+    //public bool IsValidSelection(GameObject newSelection)
+    //{
+
+    //    foreach (GameObject selected in allSelectedObjects)
+    //    {
+    //        if(newSelection.GetHashCode() == selected.GetHashCode())
+    //        {
+    //            Debug.Log("Selection already in list, removing: " + newSelection);
+    //            return false;
+    //        }
+    //    }
+
+    //    return true;
+    //}
 
     void TryDeactivateShader(GameObject sel)
     {
@@ -92,18 +138,40 @@ public class DMSelectionHandler : MonoBehaviour
     {
         selectedIndicator = Instantiate(sel, sel.transform.position, sel.transform.rotation);
         selectedIndicator.transform.parent = sel.transform;
-        selectedIndicator.name = "TEMP SELECTION OBJECT";
+        selectedIndicator.name = "Selection Indicator";
 
         Renderer[] renderers = selectedIndicator.GetComponentsInChildren<Renderer>();
+
+        Collider[] colliders = selectedIndicator.GetComponentsInChildren<Collider>();
 
         for (int i = 0; i < renderers.Length; i++)
         {
             renderers[i].material = selectionMaterial;
         }
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            colliders[i].enabled = false;
+        }
     }
 
     void DeactivateSelectionShader(GameObject sel)
     {
-        GameObject.Destroy(selectedIndicator);
+        GameObject.Destroy(sel.transform.Find("Selection Indicator").gameObject);
+    }
+
+    public GameObject GetLatestSelection()
+    {
+        if(allSelectedObjects.Count > 0)
+        {
+            return allSelectedObjects[allSelectedObjects.Count - 1];
+        }
+        else
+        {
+            return null;
+        }
+    }
+    public List<GameObject> GetAllSelectedObjects()
+    {
+        return allSelectedObjects;
     }
 }
