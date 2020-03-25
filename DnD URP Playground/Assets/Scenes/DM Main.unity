@@ -705,6 +705,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5602552462780969748, guid: 555596e5a25bdfe4f8707b6bce65e8f6,
+        type: 3}
+      propertyPath: m_Text
+      value: "Controls:\nInterface  mode: \t[1234]\nChange object: \t\t   T\nRotate
+        object: \t\t Q/E\nElevation: \t\t +/-"
+      objectReference: {fileID: 0}
     - target: {fileID: 5602552462894436461, guid: 555596e5a25bdfe4f8707b6bce65e8f6,
         type: 3}
       propertyPath: placementIndicator
@@ -716,6 +722,11 @@ PrefabInstance:
       propertyPath: placementIndicatorParent
       value: 
       objectReference: {fileID: 1558862528}
+    - target: {fileID: 5602552464166858126, guid: 555596e5a25bdfe4f8707b6bce65e8f6,
+        type: 3}
+      propertyPath: clickThreshold
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: 5602552464597141468, guid: 555596e5a25bdfe4f8707b6bce65e8f6,
         type: 3}
       propertyPath: m_Name

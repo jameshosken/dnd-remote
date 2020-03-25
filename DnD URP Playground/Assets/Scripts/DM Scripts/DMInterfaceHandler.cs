@@ -29,6 +29,11 @@ public class DMInterfaceHandler : MonoBehaviour
 
     public Mode mode = Mode.SELECT;
     public Vector3 lastClickedLocation = Vector3.zero;
+
+    [Tooltip("Time in seconds between mouseDown and mouseUp in which a click will register")]
+    [SerializeField] float clickThreshold = 0.1f;
+    float timeAtMouseDown = 0f;
+
     private void Start()
     {
         actionHandler = FindObjectOfType<DMActionHandler>();
@@ -59,23 +64,12 @@ public class DMInterfaceHandler : MonoBehaviour
         HandleObjectRotation(KeyCode.Q, KeyCode.E);
         HandleMaterialChange(KeyCode.M);
 
-        HandlePrimaryMouseClick();
+        HandlePrimaryMouse();
         HandleSecondaryMouseClick();
-        HandleWallPlacementMode(KeyCode.LeftShift);
 
     }
 
-    private void HandleWallPlacementMode(KeyCode key)
-    {
-        if (Input.GetKeyDown(key))
-        {
-            creationHandler.ToggleWallMode(true);
-        }
-        if (Input.GetKeyUp(key))
-        {
-            creationHandler.ToggleWallMode(false);
-        }
-    }
+
 
     //Fired by dropdown
     public void ChangeMode(int m)
@@ -107,30 +101,70 @@ public class DMInterfaceHandler : MonoBehaviour
         }
     }
 
-    private void HandlePrimaryMouseClick()
+    private void HandlePrimaryMouse()
     {
+
+        
 
         if (Input.GetMouseButtonDown(0))
         {
-            
-            //Horrific 'if' nest:
+            timeAtMouseDown = Time.time;
+
             if (mode == DMInterfaceHandler.Mode.PLACE)
             {
-                creationHandler.HandleObjectPlacement();
+                creationHandler.OnBeginDrag();
             }
-            else if (mode == DMInterfaceHandler.Mode.SELECT ||
-                        mode == DMInterfaceHandler.Mode.MOVE ||
-                        mode == DMInterfaceHandler.Mode.DELETE )
+
+            if (mode == DMInterfaceHandler.Mode.SELECT ||
+                    mode == DMInterfaceHandler.Mode.MOVE ||
+                    mode == DMInterfaceHandler.Mode.DELETE)
             {
-                selectionHandler.HandleSelection();
+                selectionHandler.OnBeginDrag();
+            }
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+
+            
+
+            if (mode == DMInterfaceHandler.Mode.PLACE)
+            {
+                creationHandler.OnEndDrag();
             }
 
-            actionHandler.UpdateMeasureToolStart();
+            if (mode == DMInterfaceHandler.Mode.SELECT ||
+                    mode == DMInterfaceHandler.Mode.MOVE ||
+                    mode == DMInterfaceHandler.Mode.DELETE)
+            {
+                selectionHandler.OnEndDrag();
+            }
 
-            //Applies to all modes, AFTER all above functions:
-            lastClickedLocation = GetMouseGridPosition();
+            if (Time.time - timeAtMouseDown < clickThreshold)
+            {
+                OnMouseClick();
+            }
 
 
+        }
+
+
+
+    }
+
+    private void OnMouseClick()
+    {
+
+        actionHandler.UpdateMeasureToolStart();
+
+        //Applies to all modes, AFTER all above functions:
+        lastClickedLocation = GetMouseGridPosition();
+
+        if (mode == DMInterfaceHandler.Mode.SELECT ||
+                    mode == DMInterfaceHandler.Mode.MOVE ||
+                    mode == DMInterfaceHandler.Mode.DELETE)
+        {
+            selectionHandler.HandleSelectionClick();
         }
 
     }

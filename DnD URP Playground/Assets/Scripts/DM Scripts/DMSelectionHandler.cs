@@ -15,6 +15,8 @@ public class DMSelectionHandler : MonoBehaviour
     Material selectionMaterial;
     GenericMaterialsHandler materialsHandler;
 
+    bool isDragging = false;
+    Vector3 mouseDownPosition;
 
     // Start is called before the first frame update
     void Start()
@@ -24,20 +26,58 @@ public class DMSelectionHandler : MonoBehaviour
         //materialsHandler = FindObjectOfType<DMMaterialsHandler>();    //Todo implement materials change
     }
 
+    private void Update()
+    {
+        if (isDragging)
+        {
+            Camera camera = Camera.main;
 
-    public void HandleSelection()
+            //if (!Input.GetKey(KeyCode.LeftShift)) TryClearSelection();
+
+            DMSelectable[] selectableObjects = FindObjectsOfType<DMSelectable>();
+            for (int i = selectableObjects.Length-1; i >= 0; i--)
+            {
+
+                Bounds viewportBounds = GetViewportBounds(camera, mouseDownPosition, Input.mousePosition);
+                if (viewportBounds.Contains(camera.WorldToViewportPoint(selectableObjects[i].transform.position)))
+                {
+                    GameObject attemptedSelection = selectableObjects[i].transform.root.gameObject;
+
+
+
+                    if (!IsDuplicateSelection(attemptedSelection))
+                    {
+
+                        AddToSelection(attemptedSelection);
+                    }
+                    //allSelectedObjects.Add(selectables[i].gameObject);
+                }
+            }
+        }
+    }
+
+    Bounds GetViewportBounds(Camera camera, Vector3 screenPosition1, Vector3 screenPosition2)
+    {
+        Vector3 v1 = camera.ScreenToViewportPoint(screenPosition1);
+        Vector3 v2 = camera.ScreenToViewportPoint(screenPosition2);
+        Vector3 min = Vector3.Min(v1, v2);
+        Vector3 max = Vector3.Max(v1, v2);
+        min.z = camera.nearClipPlane;
+        max.z = camera.farClipPlane;
+
+        Bounds bounds = new Bounds();
+        bounds.SetMinMax(min, max);
+        return bounds;
+    }
+
+
+    public void HandleSelectionClick()
     {
         Ray ray = main.ScreenPointToRay(Input.mousePosition);
 
         RaycastHit hit;
 
-        bool isSuccessfulSelection = false; 
-
-        //Prevent clicks when over UI:
-        if (EventSystem.current.IsPointerOverGameObject())
-        {
-            return;
-        }
+        bool isSuccessfulSelection = false;
 
         if (Physics.Raycast(ray, out hit))
         {
@@ -66,19 +106,37 @@ public class DMSelectionHandler : MonoBehaviour
             }
         }
 
-        if (!isSuccessfulSelection)
+        if (!isSuccessfulSelection && Vector3.Distance(mouseDownPosition, Input.mousePosition) < 1f)
         {
             TryClearSelection();
         }
     }
 
+
+    public void OnBeginDrag()
+    {
+
+        //Prevent clicks when over UI
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+        mouseDownPosition = Input.mousePosition;
+        isDragging = true;
+        
+    }
+
+
+    public void OnEndDrag()
+    {
+        isDragging = false;
+    }
     private bool IsDuplicateSelection(GameObject attemptedSelection)
     {
         foreach (GameObject selected in allSelectedObjects)
         {
             if (attemptedSelection.GetHashCode() == selected.GetHashCode())
             {
-                Debug.Log("Selection already in list, flag to remove: " + attemptedSelection);
                 return true;
             }
         }
@@ -97,11 +155,11 @@ public class DMSelectionHandler : MonoBehaviour
 
         foreach (GameObject selected in allSelectedObjects)
         {
+
             TryDeactivateShader(selected);
         }
         allSelectedObjects.Clear();
 
-        Debug.Log("Cleared Selection");
     }
 
     void RemoveFromSelection(GameObject toRemove)
@@ -111,20 +169,7 @@ public class DMSelectionHandler : MonoBehaviour
         allSelectedObjects.Remove(toRemove);
     }
 
-    //public bool IsValidSelection(GameObject newSelection)
-    //{
 
-    //    foreach (GameObject selected in allSelectedObjects)
-    //    {
-    //        if(newSelection.GetHashCode() == selected.GetHashCode())
-    //        {
-    //            Debug.Log("Selection already in list, removing: " + newSelection);
-    //            return false;
-    //        }
-    //    }
-
-    //    return true;
-    //}
 
     void TryDeactivateShader(GameObject sel)
     {
@@ -137,6 +182,7 @@ public class DMSelectionHandler : MonoBehaviour
     void ActivateSelectionShader(GameObject sel)
     {
         selectedIndicator = Instantiate(sel, sel.transform.position, sel.transform.rotation);
+        DestroyImmediate(selectedIndicator.GetComponent<DMSelectable>());//Selection Outline is NOT selectable
         selectedIndicator.transform.parent = sel.transform;
         selectedIndicator.name = "Selection Indicator";
 
@@ -156,7 +202,8 @@ public class DMSelectionHandler : MonoBehaviour
 
     void DeactivateSelectionShader(GameObject sel)
     {
-        GameObject.Destroy(sel.transform.Find("Selection Indicator").gameObject);
+
+        GameObject.DestroyImmediate(sel.transform.Find("Selection Indicator").gameObject);  //Don't wait until next frame; causes duplication issues.
     }
 
     public GameObject GetLatestSelection()

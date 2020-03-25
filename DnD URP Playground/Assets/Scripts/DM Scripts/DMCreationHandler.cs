@@ -24,7 +24,7 @@ public class DMCreationHandler : MonoBehaviour
     DMInterfaceHandler interfaceHandler;
     GenericMaterialsHandler materialsHandler;
 
-    bool wallMode = false;
+    bool isDragging = false;
     public float placementRotation = 0;
 
     Vector3 wallStart = Vector3.zero;
@@ -52,11 +52,12 @@ public class DMCreationHandler : MonoBehaviour
         }
     }
 
-    public void ToggleWallMode(bool status)
-    {
-        wallMode = status;
-        UpdateIndicators();
-    }
+    //public void ToggleWallMode(bool status)
+    //{
+    //    wallMode = status;
+    //    UpdateIndicators();
+    //}
+
     void UpdatePlacementIndex()
     {
         objectIdxToCreate = placementDropdown.value;
@@ -74,7 +75,7 @@ public class DMCreationHandler : MonoBehaviour
 
     void Update()
     {
-        
+
         if (interfaceHandler.mode != DMInterfaceHandler.Mode.PLACE)
         {
             if (placementIndicatorParent.gameObject.activeSelf) { placementIndicatorParent.gameObject.SetActive(false); }
@@ -86,7 +87,7 @@ public class DMCreationHandler : MonoBehaviour
 
         if (wallEnd != mouseGridPos)
         {
-            //if (!wallMode) wallStart = mouseGridPos;    //Only place one tile if not in wall mode
+            if (!isDragging) wallStart = mouseGridPos;    //Only place one tile if not in wall mode
             wallEnd = mouseGridPos;
 
             UpdateIndicators();
@@ -101,7 +102,7 @@ public class DMCreationHandler : MonoBehaviour
     {
         List<Vector3> ghostPositions = CalculateLineFromLastClick();
         DestroyGhostIndicators();
-        CreateGhostIndicators(ghostPositions);   
+        CreateGhostIndicators(ghostPositions);
     }
 
     private void CreateGhostIndicators(List<Vector3> positions)
@@ -152,25 +153,35 @@ public class DMCreationHandler : MonoBehaviour
 
     }
 
-    public void HandleObjectPlacement()
+    public void OnBeginDrag()
     {
+        wallStart = interfaceHandler.GetMouseGridPosition();
+        isDragging = true;
+    }
 
+    public void OnEndDrag()
+    {
+        isDragging = false;
 
         if (EventSystem.current.IsPointerOverGameObject())
         {
             return;
         }
 
+        List<Vector3> nodes = CalculateLineFromLastClick();
 
-            List<Vector3> nodes = CalculateLineFromLastClick();
+        foreach (Vector3 node in nodes)
+        {
+            CreateNewObject(node);
+        }
 
-            foreach (Vector3 node in nodes)
-            {
-                CreateNewObject(node);
-            }
+        DestroyGhostIndicators();       //Clear Placement Indicators after updating
 
-            DestroyGhostIndicators();       //Clear Placement Indicators after updating
 
+    }
+
+    public void HandleObjectPlacement()
+    {
 
 
     }
@@ -180,7 +191,7 @@ public class DMCreationHandler : MonoBehaviour
 
         //if (!wallMode) wallStart = wallEnd;
 
-        Vector3 from = wallMode ? wallStart : wallEnd;
+        Vector3 from = wallStart;
         Vector3 to = wallEnd;
         //Vector3 to = interfaceHandler.GetMouseGridPosition(); //Todo: Fix bug?
 
@@ -190,6 +201,9 @@ public class DMCreationHandler : MonoBehaviour
         int zSign = (int)Mathf.Sign(to.z - from.z);
 
         List<Vector3> nodes = new List<Vector3>();
+
+        
+        nodes.Add(new Vector3(from.x, from.y, from.z));
 
         for (int i = (int)from.x; i != (int)to.x; i += xSign)
         {
@@ -231,13 +245,13 @@ public class DMCreationHandler : MonoBehaviour
 
         foreach (DMSelectable sel in selectables)
         {
-            if(sel.gameObject.transform.position == pos && sel.gameObject.name == placementObjects[objectIdxToCreate].name)
+            if (sel.gameObject.transform.position == pos && sel.gameObject.name == placementObjects[objectIdxToCreate].name)
             {
                 print("Duplicate Creation");
                 return;
             }
         }
-        
+
         GameObject clone = Instantiate(
             placementObjects[objectIdxToCreate],
             pos,

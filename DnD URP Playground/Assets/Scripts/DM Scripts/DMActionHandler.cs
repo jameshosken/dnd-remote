@@ -117,9 +117,12 @@ public class DMActionHandler : MonoBehaviour
 
     public void HandleSelectedObjectMove()
     {
+
+        Transform origin = selectionHandler.GetLatestSelection().transform;
         foreach (GameObject selected in selectionHandler.GetAllSelectedObjects())
         {
-            selected.transform.position = movementIndicator.transform.position;
+            Vector3 offset = selected.transform.position - origin.transform.position;
+            selected.transform.position = movementIndicator.transform.position + offset;
         }
        
     }
