@@ -30,6 +30,8 @@ public class DMInterfaceHandler : MonoBehaviour
     public Mode mode = Mode.SELECT;
     public Vector3 lastClickedLocation = Vector3.zero;
 
+    public Vector3[] mouseDraggedGridBoxBounds = new Vector3[2];
+
     [Tooltip("Time in seconds between mouseDown and mouseUp in which a click will register")]
     [SerializeField] float clickThreshold = 0.1f;
     float timeAtMouseDown = 0f;
@@ -103,8 +105,6 @@ public class DMInterfaceHandler : MonoBehaviour
 
     private void HandlePrimaryMouse()
     {
-
-        
 
         if (Input.GetMouseButtonDown(0))
         {

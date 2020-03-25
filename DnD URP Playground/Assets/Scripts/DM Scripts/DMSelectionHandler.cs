@@ -14,6 +14,12 @@ public class DMSelectionHandler : MonoBehaviour
 
     Material selectionMaterial;
     GenericMaterialsHandler materialsHandler;
+    DMInterfaceHandler interfaceHandler; 
+    [SerializeField] MeshFilter selectionBoxMF;
+
+
+    public Vector3 mouseDownGridPos = new Vector3();
+
 
     bool isDragging = false;
     Vector3 mouseDownPosition;
@@ -21,6 +27,7 @@ public class DMSelectionHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        interfaceHandler = FindObjectOfType<DMInterfaceHandler>();
         main = Camera.main;
         selectionMaterial = Resources.Load("SelectionMaterial") as Material;
         //materialsHandler = FindObjectOfType<DMMaterialsHandler>();    //Todo implement materials change
@@ -30,20 +37,20 @@ public class DMSelectionHandler : MonoBehaviour
     {
         if (isDragging)
         {
-            Camera camera = Camera.main;
+            if (!selectionBoxMF.GetComponent<Renderer>().enabled)
+            {
+                selectionBoxMF.GetComponent<Renderer>().enabled = true;
+            }
 
             //if (!Input.GetKey(KeyCode.LeftShift)) TryClearSelection();
-
             DMSelectable[] selectableObjects = FindObjectsOfType<DMSelectable>();
             for (int i = selectableObjects.Length-1; i >= 0; i--)
             {
 
-                Bounds viewportBounds = GetViewportBounds(camera, mouseDownPosition, Input.mousePosition);
-                if (viewportBounds.Contains(camera.WorldToViewportPoint(selectableObjects[i].transform.position)))
+                Bounds viewportBounds = GetViewportBounds(main, mouseDownPosition, Input.mousePosition);
+                if (viewportBounds.Contains(main.WorldToViewportPoint(selectableObjects[i].transform.position)))
                 {
                     GameObject attemptedSelection = selectableObjects[i].transform.root.gameObject;
-
-
 
                     if (!IsDuplicateSelection(attemptedSelection))
                     {
@@ -53,7 +60,56 @@ public class DMSelectionHandler : MonoBehaviour
                     //allSelectedObjects.Add(selectables[i].gameObject);
                 }
             }
+
+            UpdateSelectionBox(mouseDownGridPos, interfaceHandler.GetMouseGridPosition());
+            return;
         }
+
+        if (selectionBoxMF.GetComponent<Renderer>().enabled)
+        {
+            selectionBoxMF.GetComponent<Renderer>().enabled = false;
+        }
+    }
+
+    private void UpdateSelectionBox(Vector3 m1, Vector3 m2)
+    {
+        Mesh mesh = new Mesh();
+
+        Vector3[] verts = new Vector3[8];   //Order abcdefgh
+
+        float h = 10f;
+
+        //Bottom
+        verts[0] = new Vector3(m1.x, 0, m1.z);
+        verts[1] = new Vector3(m2.x, 0, m1.z);
+        verts[2] = new Vector3(m1.x, 0, m2.z);
+        verts[3] = new Vector3(m2.x, 0, m2.z);
+        //Top
+        verts[4] = new Vector3(m1.x, h, m1.z);
+        verts[5] = new Vector3(m2.x, h, m1.z);
+        verts[6] = new Vector3(m1.x, h, m2.z);
+        verts[7] = new Vector3(m2.x, h, m2.z);
+
+        int[] tris = new int[]
+        {
+            0,1,4,
+            1,5,4,
+
+            1,3,5,
+            3,7,5,
+
+            3,2,7,
+            2,6,7,
+
+            2,0,6,
+            0,4,6
+        };
+
+        mesh.vertices = verts;
+        mesh.triangles = tris;
+        mesh.RecalculateNormals();
+
+        selectionBoxMF.mesh = mesh;
     }
 
     Bounds GetViewportBounds(Camera camera, Vector3 screenPosition1, Vector3 screenPosition2)
@@ -122,6 +178,7 @@ public class DMSelectionHandler : MonoBehaviour
             return;
         }
         mouseDownPosition = Input.mousePosition;
+        mouseDownGridPos = interfaceHandler.GetMouseGridPosition();
         isDragging = true;
         
     }
